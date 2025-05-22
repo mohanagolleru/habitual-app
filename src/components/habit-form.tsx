@@ -76,12 +76,11 @@ const LUCIDE_EXCLUDED_KEYS = [
   'LucideProps',
   'LucideProvider',
   'toPascalCase',
-  'default', // Default export, often an object containing all icons
-  'icons',   // Sometimes used as an export name for the icons object
+  'default', 
+  'icons',   
   'createLucideIcon',
-  'ICON_NAMES', // If lucide-react exports a list of names
-  'version', // If lucide-react exports its version
-  // Add any other known non-component exports here
+  'ICON_NAMES', 
+  'version', 
 ];
 
 export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProps) {
@@ -90,7 +89,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     defaultValues: {
       title: initialData?.title || "",
       frequency: initialData?.frequency || "daily",
-      icon: initialData?.icon || "Target", // Default to a known valid icon
+      icon: initialData?.icon || "Target", 
       color: initialData?.color || DEFAULT_COLOR_CLASS,
     },
   });
@@ -98,34 +97,52 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
   const [iconSearch, setIconSearch] = React.useState("");
   const [isIconPopoverOpen, setIsIconPopoverOpen] = React.useState(false);
 
+  // DIAGNOSTIC: Use a hardcoded short list of known good icons
   const availableIcons = React.useMemo(() => {
-    const allKeys = Object.keys(LucideIcons);
-    console.log("[HabitForm] All keys from LucideIcons import:", allKeys.length, allKeys.slice(0, 30));
-
-    const icons = allKeys
-      .filter(key => {
+    console.log("[HabitForm] Using DIAGNOSTIC hardcoded icon list.");
+    const hardcodedIcons = ['Activity', 'Smile', 'Airplay', 'AlarmClock', 'Award', 'Anchor'];
+    // Verify these exist in LucideIcons and are valid components
+    const verifiedIcons = hardcodedIcons.filter(key => {
         const potentialIcon = (LucideIcons as any)[key];
-        
-        // CRITICAL CHECK: Lucide icons are React.forwardRef components
-        // These are objects with a specific $$typeof property
-        const isForwardRefComponent =
-          typeof potentialIcon === 'object' &&
-          potentialIcon !== null &&
-          (potentialIcon as any).$$typeof === Symbol.for('react.forward_ref');
-        
-        const isUpper = key[0] === key[0].toUpperCase(); // Icon names are PascalCase
-        const notExcluded = !LUCIDE_EXCLUDED_KEYS.includes(key);
-        
-        if (isUpper && notExcluded && !isForwardRefComponent) {
-            console.log(`[HabitForm] Candidate ${key} excluded: not a ForwardRef component. Type: ${typeof potentialIcon}, $$typeof: ${(potentialIcon as any)?.$$typeof}, Keys: ${potentialIcon ? Object.keys(potentialIcon) : 'null'}`);
+        const isForwardRef = typeof potentialIcon === 'object' &&
+                             potentialIcon !== null &&
+                             (potentialIcon as any).$$typeof === Symbol.for('react.forward_ref');
+        if (!isForwardRef) {
+            console.warn(`[HabitForm DIAGNOSTIC] Hardcoded icon '${key}' is NOT a valid ForwardRef component. Type: ${typeof potentialIcon}`);
         }
-        
-        return isForwardRefComponent && isUpper && notExcluded;
-      })
-      .sort();
-    console.log("[HabitForm] Computed availableIcons after filtering:", icons.length, icons.slice(0, 5));
-    return icons;
+        return isForwardRef;
+    });
+    console.log("[HabitForm DIAGNOSTIC] Verified hardcoded icons:", verifiedIcons);
+    return verifiedIcons;
   }, []);
+
+  // const availableIcons = React.useMemo(() => {
+  //   const allKeys = Object.keys(LucideIcons);
+  //   console.log("[HabitForm] All keys from LucideIcons import:", allKeys.length, allKeys.slice(0, 30));
+
+  //   const icons = allKeys
+  //     .filter(key => {
+  //       const potentialIcon = (LucideIcons as any)[key];
+        
+  //       const isForwardRefComponent =
+  //         typeof potentialIcon === 'object' &&
+  //         potentialIcon !== null &&
+  //         (potentialIcon as any).$$typeof === Symbol.for('react.forward_ref');
+        
+  //       const isUpper = key[0] === key[0].toUpperCase(); 
+  //       const notExcluded = !LUCIDE_EXCLUDED_KEYS.includes(key);
+        
+  //       if (isUpper && notExcluded && !isForwardRefComponent) {
+  //           console.log(`[HabitForm] Candidate ${key} excluded: not a ForwardRef component. Type: ${typeof potentialIcon}, $$typeof: ${(potentialIcon as any)?.$$typeof}, Keys: ${potentialIcon ? Object.keys(potentialIcon) : 'null'}`);
+  //       }
+        
+  //       return isForwardRefComponent && isUpper && notExcluded;
+  //     })
+  //     .sort();
+  //   console.log("[HabitForm] Computed availableIcons after filtering:", icons.length, icons.slice(0, 5));
+  //   return icons;
+  // }, []);
+
 
   const filteredIcons = availableIcons.filter(iconName =>
     iconName.toLowerCase().includes(iconSearch.toLowerCase())
@@ -133,13 +150,13 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
 
   React.useEffect(() => {
     if(isIconPopoverOpen) {
-      console.log("[HabitForm] Icon Popover Opened. Available icons count (from effect):", availableIcons.length);
+      console.log("[HabitForm] Icon Popover Opened. availableIcons count (from effect):", availableIcons.length);
       if (availableIcons.length > 0) {
-        console.log("[HabitForm] First 5 available icons (from effect):", availableIcons.slice(0,5));
+        console.log("[HabitForm] First 5 availableIcons (from effect):", availableIcons.slice(0,5));
       }
-      console.log("[HabitForm] Filtered icons count (from effect):", filteredIcons.length);
+      console.log("[HabitForm] filteredIcons count (from effect):", filteredIcons.length);
       if (filteredIcons.length > 0) {
-        console.log("[HabitForm] First 5 filtered icons (from effect):", filteredIcons.slice(0,5));
+        console.log("[HabitForm] First 5 filteredIcons (from effect):", filteredIcons.slice(0,5));
       }
     }
   }, [isIconPopoverOpen, availableIcons, filteredIcons]);
@@ -197,7 +214,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                       {field.value && (LucideIcons as any)[field.value] && typeof (LucideIcons as any)[field.value] === 'object' && (LucideIcons as any)[field.value].$$typeof === Symbol.for('react.forward_ref') ? (
                         React.createElement((LucideIcons as any)[field.value], { className: "mr-2 h-4 w-4" })
                       ) : (
-                        <Smile className="mr-2 h-4 w-4" /> // Fallback icon
+                        <Smile className="mr-2 h-4 w-4" /> 
                       )}
                       {field.value && (LucideIcons as any)[field.value] && typeof (LucideIcons as any)[field.value] === 'object' && (LucideIcons as any)[field.value].$$typeof === Symbol.for('react.forward_ref') ? field.value : "Select icon"}
                     </Button>
@@ -218,10 +235,9 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                         {filteredIcons.map(iconName => {
                           const IconComponent = (LucideIcons as any)[iconName];
                           
-                          // CRITICAL GUARD: Ensure IconComponent is not undefined AND is a valid forwardRef component
                           if (!IconComponent || typeof IconComponent !== 'object' || (IconComponent as any).$$typeof !== Symbol.for('react.forward_ref')) {
                             console.warn(`[HabitForm] IconComponent for '${iconName}' is undefined or not a valid ForwardRef component in map loop and was skipped. Value:`, IconComponent);
-                            return null; // Skip rendering this item
+                            return null; 
                           }
 
                           try {
@@ -249,8 +265,8 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                               </div>
                             );
                           } catch (e) {
-                            console.error(`[HabitForm] Error rendering icon ${iconName}:`, e);
-                            return <div key={iconName} className="p-2 text-xs text-red-500">Error: {iconName}</div>;
+                            console.error(`[HabitForm] Error rendering icon ${iconName}:`, e, "Component was:", IconComponent);
+                            return <div key={iconName + "-error"} className="p-2 text-xs text-red-500">Error: {iconName}</div>;
                           }
                         })}
                         </div>
@@ -312,3 +328,4 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     </Form>
   );
 }
+
