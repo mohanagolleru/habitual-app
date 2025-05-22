@@ -61,7 +61,7 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1">
           {ALL_MONTHS.map((monthIndex) => (
             <div key={monthIndex} className="flex flex-col items-center">
               <h4 className="text-sm font-medium mb-1 text-muted-foreground">{getMonthName(monthIndex)} {year}</h4>
