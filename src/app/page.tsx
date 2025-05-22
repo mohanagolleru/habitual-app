@@ -28,12 +28,17 @@ export default function HomePage() {
   const { toast } = useToast();
   const [isMounted, setIsMounted] = React.useState(false);
 
+  const [draggingHabitId, setDraggingHabitId] = React.useState<string | null>(null);
+  const [dropTargetId, setDropTargetId] = React.useState<string | null>(null);
+
+
   React.useEffect(() => {
     setIsMounted(true);
     try {
       const storedHabits = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (storedHabits) {
         const parsedHabits: Habit[] = JSON.parse(storedHabits);
+        // Validate and use stored order
         const validatedHabits = parsedHabits.map(h => ({
           ...h,
           icon: h.icon || 'Target',
@@ -43,7 +48,7 @@ export default function HomePage() {
           longestStreak: h.longestStreak || 0,
           frequency: h.frequency || 'daily',
           createdAt: h.createdAt || new Date(0).toISOString()
-        })).sort((a,b) => parseISO(a.createdAt).getTime() - parseISO(b.createdAt).getTime());
+        }));
         setHabits(validatedHabits);
       }
     } catch (error) {
@@ -98,7 +103,8 @@ export default function HomePage() {
       const result = await createHabitAction(formData);
 
       if (result.habit) {
-        setHabits(prevHabits => [...prevHabits, result.habit!].sort((a,b) => parseISO(a.createdAt).getTime() - parseISO(b.createdAt).getTime()));
+        // Add new habit to the end of the list
+        setHabits(prevHabits => [...prevHabits, result.habit!]);
         toast({ title: "Success", description: "New habit added!" });
       } else if (result.errors) {
         result.errors.forEach(err => {
@@ -155,6 +161,67 @@ export default function HomePage() {
     setSelectedDate(new Date());
   };
 
+  // Drag and Drop Handlers
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, habitId: string) => {
+    e.dataTransfer.setData('text/plain', habitId);
+    setDraggingHabitId(habitId);
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>, targetHabitId: string) => {
+    e.preventDefault();
+    if (targetHabitId !== draggingHabitId) {
+      setDropTargetId(targetHabitId);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault(); 
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    setDropTargetId(null);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>, targetHabitId: string) => {
+    e.preventDefault();
+    const sourceHabitId = e.dataTransfer.getData('text/plain');
+    
+    if (!sourceHabitId || sourceHabitId === targetHabitId) {
+      setDraggingHabitId(null);
+      setDropTargetId(null);
+      return;
+    }
+
+    setHabits(currentHabits => {
+      const newHabits = [...currentHabits];
+      const sourceIndex = newHabits.findIndex(h => h.id === sourceHabitId);
+      let targetIndex = newHabits.findIndex(h => h.id === targetHabitId);
+
+      if (sourceIndex === -1 || targetIndex === -1) {
+        return currentHabits; 
+      }
+      
+      const [draggedItem] = newHabits.splice(sourceIndex, 1);
+      
+      // If source was before target, target index needs to be adjusted after splice
+      // However, re-finding targetIndex or simply inserting at the original targetIndex
+      // (if it hasn't shifted due to source item being the target itself, which is handled) works.
+      // For inserting *before* the target element:
+      newHabits.splice(targetIndex, 0, draggedItem);
+      
+      return newHabits;
+    });
+    
+    setDraggingHabitId(null);
+    setDropTargetId(null);
+  };
+
+  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+    setDraggingHabitId(null);
+    setDropTargetId(null);
+  };
+
+
   const currentDateContext = selectedDate || new Date();
 
   if (!isMounted) {
@@ -193,6 +260,14 @@ export default function HomePage() {
                 onDeleteHabit={handleDeleteHabit}
                 onEditHabit={handleOpenAddHabitDialog}
                 currentDate={currentDateContext}
+                draggingHabitId={draggingHabitId}
+                dropTargetId={dropTargetId}
+                onDragStart={handleDragStart}
+                onDragEnter={handleDragEnter}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onDragEnd={handleDragEnd}
               />
             ) : (
               <Card className="shadow-lg text-center py-20 bg-card">

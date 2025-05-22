@@ -17,9 +17,31 @@ interface HabitItemProps {
   onDeleteHabit: (habitId: string) => void;
   onEditHabit: (habit: Habit) => void;
   currentDateContext: Date; 
+  isDragging: boolean;
+  isDropTarget: boolean;
+  onDragStartHandler: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDragEnterHandler: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDragOverHandler: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDragLeaveHandler: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDropHandler: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDragEndHandler: (e: React.DragEvent<HTMLDivElement>) => void;
 }
 
-export function HabitItem({ habit, onToggleCompletion, onDeleteHabit, onEditHabit, currentDateContext }: HabitItemProps) {
+export function HabitItem({ 
+  habit, 
+  onToggleCompletion, 
+  onDeleteHabit, 
+  onEditHabit, 
+  currentDateContext,
+  isDragging,
+  isDropTarget,
+  onDragStartHandler,
+  onDragEnterHandler,
+  onDragOverHandler,
+  onDragLeaveHandler,
+  onDropHandler,
+  onDragEndHandler
+}: HabitItemProps) {
   const IconComponent = (LucideIcons as any)[habit.icon] || LucideIcons.Target;
   
   const isCompletedForCurrentDate = habit.completions[format(currentDateContext, 'yyyy-MM-dd')];
@@ -38,10 +60,23 @@ export function HabitItem({ habit, onToggleCompletion, onDeleteHabit, onEditHabi
     monthly: "Monthly",
   };
   
-  const iconTextColor = 'text-white'; // Consistently white icon glyph
+  const iconTextColor = 'text-white'; 
 
   return (
-    <Card className="shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col h-full">
+    <Card 
+      className={cn(
+        "shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col h-full",
+        isDragging ? "opacity-50 cursor-grabbing" : "cursor-grab",
+        isDropTarget ? "border-t-4 border-primary" : ""
+      )}
+      draggable={true}
+      onDragStart={onDragStartHandler}
+      onDragEnter={onDragEnterHandler}
+      onDragOver={onDragOverHandler}
+      onDragLeave={onDragLeaveHandler}
+      onDrop={onDropHandler}
+      onDragEnd={onDragEndHandler}
+    >
       <CardHeader className="flex-row items-start gap-4 space-y-0 pb-3">
         <span className={cn("p-2 rounded-lg", habit.color)}>
           <IconComponent 
@@ -52,7 +87,6 @@ export function HabitItem({ habit, onToggleCompletion, onDeleteHabit, onEditHabi
         </span>
         <div className="flex-1">
           <CardTitle className="text-xl">{habit.title}</CardTitle>
-          {/* Description removed */}
         </div>
         <Badge variant="secondary" className="capitalize">
             <CalendarIcon className="w-3 h-3 mr-1" />

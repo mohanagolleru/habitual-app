@@ -4,7 +4,6 @@
 import * as React from 'react';
 import type { Habit } from "@/lib/types";
 import { HabitItem } from "./habit-item";
-// import { isHabitCompletedOnDate } from '@/lib/actions'; // Removed this, not directly used here but good to be aware
 import { format, differenceInCalendarDays, parseISO } from 'date-fns';
 
 interface HabitListProps {
@@ -12,15 +11,38 @@ interface HabitListProps {
   onToggleCompletion: (habitId: string, date: string, completed: boolean) => void;
   onDeleteHabit: (habitId: string) => void;
   onEditHabit: (habit: Habit) => void;
-  currentDate: Date; 
+  currentDate: Date;
+  draggingHabitId: string | null;
+  dropTargetId: string | null;
+  onDragStart: (e: React.DragEvent<HTMLDivElement>, habitId: string) => void;
+  onDragEnter: (e: React.DragEvent<HTMLDivElement>, targetHabitId: string) => void;
+  onDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDragLeave: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDrop: (e: React.DragEvent<HTMLDivElement>, targetHabitId: string) => void;
+  onDragEnd: (e: React.DragEvent<HTMLDivElement>) => void;
 }
 
-export function HabitList({ habits, onToggleCompletion, onDeleteHabit, onEditHabit, currentDate }: HabitListProps) {
+export function HabitList({ 
+  habits, 
+  onToggleCompletion, 
+  onDeleteHabit, 
+  onEditHabit, 
+  currentDate,
+  draggingHabitId,
+  dropTargetId,
+  onDragStart,
+  onDragEnter,
+  onDragOver,
+  onDragLeave,
+  onDrop,
+  onDragEnd
+}: HabitListProps) {
   
   const relevantHabits = habits.filter(habit => {
     const createdAt = parseISO(habit.createdAt);
+    // The order from the 'habits' prop (managed by HomePage) is now preserved.
     return differenceInCalendarDays(currentDate, createdAt) >= 0;
-  }).sort((a,b) => parseISO(a.createdAt).getTime() - parseISO(b.createdAt).getTime());
+  });
 
 
   if (relevantHabits.length === 0) {
@@ -46,6 +68,14 @@ export function HabitList({ habits, onToggleCompletion, onDeleteHabit, onEditHab
             onDeleteHabit={onDeleteHabit}
             onEditHabit={onEditHabit}
             currentDateContext={currentDate}
+            isDragging={habit.id === draggingHabitId}
+            isDropTarget={habit.id === dropTargetId}
+            onDragStartHandler={(e) => onDragStart(e, habit.id)}
+            onDragEnterHandler={(e) => onDragEnter(e, habit.id)}
+            onDragOverHandler={onDragOver}
+            onDragLeaveHandler={onDragLeave}
+            onDropHandler={(e) => onDrop(e, habit.id)}
+            onDragEndHandler={onDragEnd}
           />
         )
       )}
