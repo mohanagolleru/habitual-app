@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/form";
 import * as LucideIcons from 'lucide-react';
 import { Smile, Check } from 'lucide-react'; // Specific import for placeholder and Check
-import { ScrollArea } from '@/components/ui/scroll-area';
+// import { ScrollArea } from '@/components/ui/scroll-area'; // Temporarily remove ScrollArea
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 
@@ -87,7 +87,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     defaultValues: {
       title: initialData?.title || "",
       frequency: initialData?.frequency || "daily",
-      icon: initialData?.icon || "Target",
+      icon: initialData?.icon || "Target", // Default to Target, a known valid icon
       color: initialData?.color || DEFAULT_COLOR_CLASS,
     },
   });
@@ -99,8 +99,6 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     return Object.keys(LucideIcons)
       .filter(key => {
         const potentialIcon = (LucideIcons as any)[key];
-        // Check if it's a function (React component) and starts with an uppercase letter (convention for components)
-        // And it's not in our exclusion list
         return typeof potentialIcon === 'function' &&
                key[0] === key[0].toUpperCase() &&
                !LUCIDE_EXCLUDED_KEYS.includes(key);
@@ -111,6 +109,16 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
   const filteredIcons = availableIcons.filter(iconName =>
     iconName.toLowerCase().includes(iconSearch.toLowerCase())
   );
+
+  // For debugging: Log the number of filtered icons
+  React.useEffect(() => {
+    if(isIconPopoverOpen) {
+      console.log("Filtered icons count:", filteredIcons.length);
+      if (filteredIcons.length > 0) {
+        console.log("First 5 filtered icons:", filteredIcons.slice(0,5));
+      }
+    }
+  }, [filteredIcons, isIconPopoverOpen]);
 
   return (
     <Form {...form}>
@@ -173,19 +181,21 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                <PopoverContent 
+                  className="w-[--radix-popover-trigger-width] p-2" 
+                  style={{ maxHeight: '300px', overflowY: 'auto' }} // Use direct style for overflow handling
+                >
                    <Input
                       placeholder="Search icons..."
                       value={iconSearch}
                       onChange={(e) => setIconSearch(e.target.value)}
-                      className="m-2 w-[calc(100%-1rem)] border-input"
+                      className="mb-2 w-full border-input" 
                     />
-                  <ScrollArea className="h-[200px]">
-                    <div className="grid grid-cols-4 gap-1 p-2">
+                    <div className="grid grid-cols-4 gap-1">
                     {filteredIcons.map(iconName => {
                       const IconComponent = (LucideIcons as any)[iconName];
                       if (typeof IconComponent !== 'function') {
-                        // Additional check in case something non-functional slips through
+                        console.warn(`IconComponent for ${iconName} is not a function and was skipped.`);
                         return null;
                       }
                       try {
@@ -208,18 +218,20 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                                 }
                             }}
                           >
-                            <IconComponent size={20} color="red" />
-                            <span className="text-xs mt-0.5 text-center truncate w-full">{iconName}</span>
+                            <IconComponent size={24} color="black" /> {/* Explicit size and black color */}
+                            <span className="text-xs mt-1 text-center truncate w-full text-black">{iconName}</span> {/* Explicit black color for name */}
                           </div>
                         );
                       } catch (e) {
                         console.error(`Error rendering icon ${iconName}:`, e);
-                        return <div key={iconName} className="p-2 text-xs text-red-500">Error: {iconName} ({String(e)})</div>;
+                        return <div key={iconName} className="p-2 text-xs text-red-500">Error rendering {iconName}</div>;
                       }
                     })}
-                    {filteredIcons.length === 0 && <p className="p-2 text-sm text-muted-foreground col-span-4 text-center">No icons found.</p>}
+                    {filteredIcons.length === 0 && iconSearch && <p className="p-2 text-sm text-muted-foreground col-span-4 text-center">No icons found for "{iconSearch}".</p>}
+                    {/* Display a generic message if no search term but still no icons, could indicate loading or an issue */}
+                    {filteredIcons.length === 0 && !iconSearch && availableIcons.length > 0 && <p className="p-2 text-sm text-muted-foreground col-span-4 text-center">No icons match. Try a different search.</p>}
+                    {availableIcons.length === 0 && <p className="p-2 text-sm text-muted-foreground col-span-4 text-center">No icons available to display.</p>}
                     </div>
-                  </ScrollArea>
                 </PopoverContent>
               </Popover>
               <FormDescription>
@@ -271,3 +283,4 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     </Form>
   );
 }
+    
