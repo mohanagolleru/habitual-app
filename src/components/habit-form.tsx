@@ -100,9 +100,9 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     return Object.keys(LucideIcons)
       .filter(key => {
         const potentialIcon = (LucideIcons as any)[key];
-        return typeof potentialIcon === 'function' && // Is a function (React component)
-               key[0] === key[0].toUpperCase() &&   // Starts with an uppercase letter
-               !LUCIDE_EXCLUDED_KEYS.includes(key); // Not in the exclusion list
+        return typeof potentialIcon === 'function' && 
+               key[0] === key[0].toUpperCase() &&   
+               !LUCIDE_EXCLUDED_KEYS.includes(key); 
       })
       .sort();
   }, []);
@@ -163,11 +163,11 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                     <Button variant="outline" role="combobox" className="w-full justify-start">
                       {field.value && (LucideIcons as any)[field.value] ? (
                         <>
-                          {React.createElement((LucideIcons as any)[field.value], { className: "mr-2 h-4 w-4" })}
+                          {React.createElement((LucideIcons as any)[field.value], { className: "mr-2 h-4 w-4 text-popover-foreground" })}
                           {field.value}
                         </>
                       ) : (
-                        <> <Smile className="mr-2 h-4 w-4" /> Select icon </>
+                        <> <Smile className="mr-2 h-4 w-4 text-popover-foreground" /> Select icon </>
                       )}
                     </Button>
                   </FormControl>
@@ -193,10 +193,10 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                           onClick={() => {
                             field.onChange(iconName);
                             setIsIconPopoverOpen(false);
-                            setIconSearch(""); // Reset search on selection
+                            setIconSearch(""); 
                           }}
                         >
-                          <IconComponent className="h-5 w-5 mb-1" />
+                          <IconComponent className="h-5 w-5 mb-1 text-popover-foreground" />
                           <span className="text-xs truncate w-full text-center">{iconName}</span>
                         </Button>
                       );
@@ -255,4 +255,3 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     </Form>
   );
 }
-
