@@ -35,7 +35,7 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-                <span className="p-1.5">
+                <span className="p-1">
                 <IconComponent
                     className={cn("h-6 w-6 text-black")}
                     strokeWidth={1}

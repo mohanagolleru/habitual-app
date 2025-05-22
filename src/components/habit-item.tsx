@@ -76,7 +76,7 @@ export function HabitItem({
       onDragEnd={onDragEndHandler}
     >
       <CardHeader className="flex-row items-start gap-2 space-y-0 pb-2 pt-3">
-        <span className="p-1.5">
+        <span className="p-1">
           <IconComponent
             className={cn("h-8 w-8 text-black")}
             strokeWidth={1}
