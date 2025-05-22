@@ -32,7 +32,7 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
 
   return (
     <Card className="shadow-md w-full">
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
                 <span className="p-1.5">
@@ -60,7 +60,7 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
             </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="py-1">
         <div className="flex overflow-x-auto space-x-1 py-2">
           {ALL_MONTHS.map((monthIndex) => (
             <div key={monthIndex} className="flex flex-col items-center flex-shrink-0">

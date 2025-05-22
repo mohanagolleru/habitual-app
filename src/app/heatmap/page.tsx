@@ -74,7 +74,7 @@ export default function HeatmapPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="py-4 border-b">
+      <header className="py-3 border-b">
         <div className="container mx-auto flex items-center justify-between">
           <Link href="/" passHref>
             <Button variant="outline" size="icon" aria-label="Back to Home">
@@ -94,7 +94,7 @@ export default function HeatmapPage() {
         </div>
       </header>
 
-      <main className="flex-grow container mx-auto px-4 py-8 space-y-4">
+      <main className="flex-grow container mx-auto px-4 py-4 space-y-3">
         {habits.length > 0 ? (
           habits.map((habit) => (
             <HabitHeatmapCard key={habit.id} habit={habit} year={currentYear} />
@@ -112,7 +112,7 @@ export default function HeatmapPage() {
           </div>
         )}
       </main>
-       <footer className="py-4 text-center text-muted-foreground">
+       <footer className="py-3 text-center text-muted-foreground">
         <p>&copy; {new Date().getFullYear()} Habitual. Keep building those habits!</p>
       </footer>
     </div>

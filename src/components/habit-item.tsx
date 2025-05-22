@@ -75,7 +75,7 @@ export function HabitItem({
       onDrop={onDropHandler}
       onDragEnd={onDragEndHandler}
     >
-      <CardHeader className="flex-row items-start gap-2 space-y-0 pb-3">
+      <CardHeader className="flex-row items-start gap-2 space-y-0 pb-2">
         <span className="p-1.5">
           <IconComponent
             className={cn("h-8 w-8 text-black")}
@@ -91,7 +91,7 @@ export function HabitItem({
             {frequencyTextMap[habit.frequency]}
         </Badge>
       </CardHeader>
-      <CardContent className="flex-grow space-y-3">
+      <CardContent className="flex-grow space-y-2">
         <div className="flex justify-around text-center">
           <div>
             <p className="text-2xl font-semibold text-accent flex items-center justify-center">
@@ -107,7 +107,7 @@ export function HabitItem({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between items-center border-t pt-4 mt-auto">
+      <CardFooter className="flex justify-between items-center border-t pt-3 mt-auto">
         <div className="flex gap-2">
             <Button variant="outline" size="icon" onClick={() => onEditHabit(habit)} aria-label="Edit habit">
                 <Edit3 className="h-4 w-4" />
@@ -144,5 +144,3 @@ export function HabitItem({
     </Card>
   );
 }
-
-    

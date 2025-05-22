@@ -13,7 +13,7 @@ interface AppHeaderProps {
 
 export function AppHeader({ onOpenAddHabitDialog }: AppHeaderProps) {
   return (
-    <header className="py-4 border-b">
+    <header className="py-3 border-b">
       <div className="container mx-auto flex items-center">
         <div className="flex-1">
           {/* Left spacer, can be used for other elements in the future */}

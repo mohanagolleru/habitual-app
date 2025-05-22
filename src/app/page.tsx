@@ -228,7 +228,7 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col">
       <AppHeader onOpenAddHabitDialog={() => handleOpenAddHabitDialog()} />
 
-      <main className="flex-grow container mx-auto px-4 py-6 space-y-6">
+      <main className="flex-grow container mx-auto px-4 py-4 space-y-4">
         <AddHabitDialog
           isOpen={isAddHabitDialogOpen}
           onClose={handleCloseAddHabitDialog}
@@ -266,7 +266,7 @@ export default function HomePage() {
                 onDragEnd={handleDragEnd}
               />
             ) : (
-              <Card className="shadow-xl text-center py-16 bg-card">
+              <Card className="shadow-xl text-center py-12 bg-card">
                 <div className="flex flex-col items-center">
                   <img src="https://placehold.co/150x150.png" alt="Empty state illustration" data-ai-hint="journal empty" className="mb-6 rounded-lg" />
                   <h2 className="text-2xl font-semibold text-primary mb-4">Welcome to Habitual!</h2>
@@ -285,7 +285,7 @@ export default function HomePage() {
         </div>
       </main>
 
-      <footer className="py-4 text-center text-muted-foreground">
+      <footer className="py-3 text-center text-muted-foreground">
         <p>&copy; {new Date().getFullYear()} Habitual. Keep building those habits!</p>
       </footer>
     </div>
