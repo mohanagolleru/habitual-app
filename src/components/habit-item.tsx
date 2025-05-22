@@ -38,7 +38,7 @@ export function HabitItem({ habit, onToggleCompletion, onDeleteHabit, onEditHabi
     monthly: "Monthly",
   };
   
-  const iconTextColor = habit.color.includes('yellow-400') || habit.color.includes('lime-500') || habit.color.includes('cyan-500') || habit.color.includes('amber-500') ? 'text-black' : 'text-white';
+  const iconTextColor = 'text-white'; // Consistently white icon glyph
 
   return (
     <Card className="shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col h-full">

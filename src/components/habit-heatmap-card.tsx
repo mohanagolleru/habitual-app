@@ -30,7 +30,7 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
     monthly: "Monthly",
   };
 
-  const iconTextColor = habit.color.includes('yellow-400') || habit.color.includes('lime-500') || habit.color.includes('cyan-500') || habit.color.includes('amber-500') ? 'text-black' : 'text-white';
+  const iconTextColor = 'text-white'; // Consistently white icon glyph
 
 
   return (
@@ -64,7 +64,7 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex overflow-x-auto space-x-4 py-2">
+        <div className="flex overflow-x-auto space-x-1 py-2"> {/* Reduced space-x-4 to space-x-1 */}
           {ALL_MONTHS.map((monthIndex) => (
             <div key={monthIndex} className="flex flex-col items-center flex-shrink-0">
               <h4 className="text-sm font-medium mb-1 text-muted-foreground">{getMonthName(monthIndex)} {year}</h4>
