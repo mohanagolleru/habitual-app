@@ -21,7 +21,7 @@ export function AppHeader({ onOpenAddHabitDialog }: AppHeaderProps) {
         <Link href="/" className="text-3xl font-bold text-primary text-center">
           Habitual
         </Link>
-        <div className="flex-1 flex justify-end pr-32"> {/* Increased pr-16 to pr-32 */}
+        <div className="flex-1 flex justify-end pr-20"> {/* Changed pr-32 to pr-20 */}
           <div className="flex items-center gap-4">
             <Link href="/heatmap" passHref>
               <Button variant="outline" size="lg">
