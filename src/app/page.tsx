@@ -228,7 +228,7 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col">
       <AppHeader onOpenAddHabitDialog={() => handleOpenAddHabitDialog()} />
 
-      <main className="flex-grow container mx-auto px-4 py-4 space-y-4">
+      <main className="flex-grow container mx-auto px-6 py-4 space-y-4">
         <AddHabitDialog
           isOpen={isAddHabitDialogOpen}
           onClose={handleCloseAddHabitDialog}
