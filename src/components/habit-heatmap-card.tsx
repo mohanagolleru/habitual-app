@@ -39,7 +39,11 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
                 <span className={cn("p-1.5 rounded-lg", habit.color)}>
-                <IconComponent className={cn("h-6 w-6", iconTextColor)} style={{ shapeRendering: 'crispEdges' }} />
+                <IconComponent 
+                    className={cn("h-6 w-6", iconTextColor)} 
+                    strokeWidth={1}
+                    style={{ shapeRendering: 'crispEdges', imageRendering: 'pixelated' }} 
+                />
                 </span>
                 <div>
                 <CardTitle className="text-lg">{habit.title}</CardTitle>

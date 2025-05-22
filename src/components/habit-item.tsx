@@ -44,7 +44,11 @@ export function HabitItem({ habit, onToggleCompletion, onDeleteHabit, onEditHabi
     <Card className="shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col h-full">
       <CardHeader className="flex-row items-start gap-4 space-y-0 pb-3">
         <span className={cn("p-2 rounded-lg", habit.color)}>
-          <IconComponent className={cn("h-8 w-8", iconTextColor)} style={{ shapeRendering: 'crispEdges' }} />
+          <IconComponent 
+            className={cn("h-8 w-8", iconTextColor)} 
+            strokeWidth={1}
+            style={{ shapeRendering: 'crispEdges', imageRendering: 'pixelated' }} 
+          />
         </span>
         <div className="flex-1">
           <CardTitle className="text-xl">{habit.title}</CardTitle>
