@@ -12,9 +12,10 @@ import { cn } from '@/lib/utils';
 interface DailySummaryProps {
   habits: Habit[];
   currentDate: Date; 
+  className?: string;
 }
 
-export function DailySummary({ habits, currentDate }: DailySummaryProps) {
+export function DailySummary({ habits, currentDate, className }: DailySummaryProps) {
   
   const relevantHabits = habits.filter(habit => {
     const createdAt = parseISO(habit.createdAt);
@@ -32,7 +33,7 @@ export function DailySummary({ habits, currentDate }: DailySummaryProps) {
   const titleText = isToday(currentDate) ? "Today's Progress" : `Progress on ${format(currentDate, 'MMMM d, yyyy')}`;
 
   return (
-    <Card className="shadow-md">
+    <Card className={cn("shadow-md", className)}>
       <CardHeader>
         <CardTitle className="text-xl font-semibold text-center">
           {titleText}
