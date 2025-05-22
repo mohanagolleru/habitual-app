@@ -21,9 +21,9 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
   const IconComponent = (LucideIcons as any)[habit.icon] || LucideIcons.Target;
 
   const getMonthName = (monthIndex: number): string => {
-    return format(new Date(year, monthIndex), 'MMMM'); 
+    return format(new Date(year, monthIndex), 'MMMM');
   };
-  
+
   const frequencyTextMap = {
     daily: "Daily",
     weekly: "Weekly",
@@ -61,16 +61,16 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1">
+        <div className="flex overflow-x-auto space-x-4 py-2">
           {ALL_MONTHS.map((monthIndex) => (
-            <div key={monthIndex} className="flex flex-col items-center">
+            <div key={monthIndex} className="flex flex-col items-center flex-shrink-0">
               <h4 className="text-sm font-medium mb-1 text-muted-foreground">{getMonthName(monthIndex)} {year}</h4>
               <MonthGrid
                 year={year}
                 month={monthIndex}
                 completions={habit.completions}
                 creationDate={habit.createdAt}
-                habitColor={habit.color} 
+                habitColor={habit.color}
               />
             </div>
           ))}
