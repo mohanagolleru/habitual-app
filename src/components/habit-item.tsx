@@ -107,15 +107,13 @@ export function HabitItem({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between items-center border-t pt-3 pb-3 mt-auto">
-        <div className="flex gap-2">
-            <Button variant="outline" size="icon" onClick={() => onEditHabit(habit)} aria-label="Edit habit">
-                <Edit3 className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon" onClick={() => onDeleteHabit(habit.id)} aria-label="Delete habit">
-                <Trash2 className="h-4 w-4" />
-            </Button>
-        </div>
+      <CardFooter className="flex justify-center items-center gap-2 border-t pt-3 pb-3 mt-auto">
+        <Button variant="outline" size="icon" onClick={() => onEditHabit(habit)} aria-label="Edit habit">
+            <Edit3 className="h-4 w-4" />
+        </Button>
+        <Button variant="outline" size="icon" onClick={() => onDeleteHabit(habit.id)} aria-label="Delete habit">
+            <Trash2 className="h-4 w-4" />
+        </Button>
         {canLogForThisDate && habitExistsOnThisDate && (
           <Button
             onClick={handleToggleCompletion}
