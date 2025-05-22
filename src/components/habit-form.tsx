@@ -51,14 +51,17 @@ interface HabitFormProps {
 }
 
 const PREDEFINED_ICONS: string[] = [
-  'Activity', 'Anchor', 'Award', 'Bike', 'BookOpen', 'Briefcase', 'Calendar', 'Camera', 
-  'CheckCircle', 'ClipboardList', 'Cloud', 'Coffee', 'Cpu', 'DollarSign', 'Dumbbell', 
-  'Feather', 'Film', 'Flag', 'Gift', 'Globe', 'Heart', 'Home', 'Image', 'Laptop', 
-  'Leaf', 'Lightbulb', 'Link', 'List', 'Lock', 'MapPin', 'Mic', 'Moon', 'Music', 
-  'Package', 'PenTool', 'Plane', 'Rocket', 'Run', 'Save', 'Search', 'Settings', 
-  'Share2', 'Shield', 'ShoppingBag', 'Smile', 'Speaker', 'Star', 'Sun', 'Sunrise', 
-  'Sunset', 'Tablet', 'Tag', 'Target', 'ThumbsUp', 'Trophy', 'Tv', 'User', 'Users', 
-  'Video', 'Watch', 'Wind', 'Zap' 
+  'Activity', 'Anchor', 'Apple', 'Award', 'Bed', 'Bike', 'BookOpen', 'Brain', 
+  'Briefcase', 'Calendar', 'Camera', 'Carrot', 'CheckCircle', 'ClipboardList', 
+  'Cloud', 'Coffee', 'CookingPot', 'Cpu', 'CupSoda', 'DollarSign', 'Dumbbell', 
+  'Feather', 'Film', 'Fish', 'Flag', 'Flame', 'Footprints', 'ForkKnife', 'Gift', 
+  'Globe', 'Grape', 'Heart', 'HeartPulse', 'Home', 'Image', 'Laptop', 'Leaf', 
+  'Lightbulb', 'Link', 'List', 'Lock', 'MapPin', 'Medal', 'Mic', 'Moon', 
+  'Mountain', 'Music', 'Package', 'PenTool', 'Plane', 'Rocket', 'Run', 'Salad', 
+  'Sandwich', 'Save', 'Scale', 'Search', 'Settings', 'Share2', 'Shield', 
+  'ShoppingBag', 'Smile', 'Speaker', 'Sprout', 'Star', 'Sun', 'Sunrise', 
+  'Sunset', 'Tablet', 'Tag', 'Target', 'ThumbsUp', 'Trophy', 'Tv', 'User', 
+  'Users', 'Utensils', 'Video', 'Watch', 'Waves', 'Wind', 'Yoga', 'Zap'
 ].sort();
 
 
@@ -247,3 +250,4 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     </Form>
   );
 }
+
