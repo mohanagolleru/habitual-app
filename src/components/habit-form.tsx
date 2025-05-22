@@ -106,7 +106,8 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
       .filter(key => {
         const potentialIcon = (LucideIcons as any)[key];
         
-        // Check if it's a React forwardRef component (most Lucide icons are)
+        // CRITICAL CHECK: Lucide icons are React.forwardRef components
+        // These are objects with a specific $$typeof property
         const isForwardRefComponent =
           typeof potentialIcon === 'object' &&
           potentialIcon !== null &&
@@ -193,26 +194,26 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button variant="outline" role="combobox" className="w-full justify-start text-popover-foreground">
-                      {field.value && (LucideIcons as any)[field.value] ? (
+                      {field.value && (LucideIcons as any)[field.value] && typeof (LucideIcons as any)[field.value] === 'object' && (LucideIcons as any)[field.value].$$typeof === Symbol.for('react.forward_ref') ? (
                         React.createElement((LucideIcons as any)[field.value], { className: "mr-2 h-4 w-4" })
                       ) : (
                         <Smile className="mr-2 h-4 w-4" /> // Fallback icon
                       )}
-                      {field.value && (LucideIcons as any)[field.value] ? field.value : "Select icon"}
+                      {field.value && (LucideIcons as any)[field.value] && typeof (LucideIcons as any)[field.value] === 'object' && (LucideIcons as any)[field.value].$$typeof === Symbol.for('react.forward_ref') ? field.value : "Select icon"}
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent
-                  className="w-[--radix-popover-trigger-width] p-0" // Use Popover's width variable, remove explicit width
+                  className="w-[--radix-popover-trigger-width] p-0" 
                   align="start"
                 >
                    <Input
                       placeholder="Search icons..."
                       value={iconSearch}
                       onChange={(e) => setIconSearch(e.target.value)}
-                      className="m-2 mb-0 w-[calc(100%-1rem)] border-input" // Adjusted width to fit padding
+                      className="m-2 mb-0 w-[calc(100%-1rem)] border-input" 
                     />
-                    <ScrollArea className="h-[250px] p-2"> {/* Added padding to ScrollArea */}
+                    <ScrollArea className="h-[250px] p-2"> 
                         <div className="grid grid-cols-4 gap-1">
                         {filteredIcons.map(iconName => {
                           const IconComponent = (LucideIcons as any)[iconName];
@@ -231,7 +232,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                                 onClick={() => {
                                   field.onChange(iconName);
                                   setIsIconPopoverOpen(false);
-                                  setIconSearch(""); // Reset search on select
+                                  setIconSearch(""); 
                                 }}
                                 role="button"
                                 tabIndex={0}
@@ -239,7 +240,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                                     if (e.key === 'Enter' || e.key === ' ') {
                                         field.onChange(iconName);
                                         setIsIconPopoverOpen(false);
-                                        setIconSearch(""); // Reset search on select
+                                        setIconSearch(""); 
                                     }
                                 }}
                               >
@@ -249,12 +250,10 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                             );
                           } catch (e) {
                             console.error(`[HabitForm] Error rendering icon ${iconName}:`, e);
-                            // Optionally render a placeholder for the erroring icon
                             return <div key={iconName} className="p-2 text-xs text-red-500">Error: {iconName}</div>;
                           }
                         })}
                         </div>
-                        {/* Conditional rendering for "no icons" messages */}
                         {availableIcons.length === 0 && (
                             <p className="p-2 text-sm text-muted-foreground text-center col-span-4">No icons available to display. Ensure Lucide-React is correctly installed and imported.</p>
                         )}
@@ -313,5 +312,3 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     </Form>
   );
 }
-
-    
