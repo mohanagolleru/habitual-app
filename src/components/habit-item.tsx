@@ -78,7 +78,7 @@ export function HabitItem({
       <CardHeader className="flex-row items-start gap-4 space-y-0 pb-3">
         <span className="p-2">
           <IconComponent
-            className={cn("h-8 w-8 text-primary")}
+            className={cn("h-8 w-8 text-black")}
             strokeWidth={1}
             style={{ shapeRendering: 'crispEdges', imageRendering: 'pixelated' }}
           />
