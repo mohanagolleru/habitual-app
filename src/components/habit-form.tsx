@@ -69,15 +69,16 @@ const COLOR_PALETTE: { name: string; class: string; textColor: string }[] = [
 ];
 const DEFAULT_COLOR_CLASS = 'bg-blue-500';
 
+// Keys to exclude when dynamically listing icons from lucide-react
 const LUCIDE_EXCLUDED_KEYS = [
   'createElement',
   'IconNode',
   'LucideProps',
   'LucideProvider',
   'toPascalCase',
-  'default',
-  'icons',
-  'createLucideIcon'
+  'default', // Often the module's default export, not an icon
+  'icons', // Often an object containing all icons, not an icon itself
+  'createLucideIcon' // The factory function for icons
 ];
 
 export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProps) {
@@ -96,19 +97,26 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
 
   const availableIcons = React.useMemo(() => {
     const allKeys = Object.keys(LucideIcons);
-    // Critical log: What keys are actually found on the LucideIcons object?
     console.log("[HabitForm] All keys from LucideIcons import:", allKeys.length, allKeys.slice(0, 30));
 
     const icons = allKeys
       .filter(key => {
         const potentialIcon = (LucideIcons as any)[key];
-        const isFunc = typeof potentialIcon === 'function';
+        
+        // Check if the key is PascalCase (starts with an uppercase letter)
         const isUpper = key[0] === key[0].toUpperCase();
+        // Check if it's not one of the known non-icon exports
         const notExcluded = !LUCIDE_EXCLUDED_KEYS.includes(key);
-        return isFunc && isUpper && notExcluded;
+        // Check if it's a function OR a non-null object (Lucide icons are ForwardRef objects)
+        const isComponentLike = typeof potentialIcon === 'function' || (typeof potentialIcon === 'object' && potentialIcon !== null);
+
+        if (isUpper && notExcluded && !isComponentLike) {
+            console.log(`[HabitForm] Candidate ${key} excluded: not component-like. Type: ${typeof potentialIcon}`);
+        }
+        
+        return isComponentLike && isUpper && notExcluded;
       })
       .sort();
-    // Critical log: How many icons are identified after filtering?
     console.log("[HabitForm] Computed availableIcons after filtering:", icons.length, icons.slice(0, 5));
     return icons;
   }, []);
@@ -119,7 +127,6 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
 
   React.useEffect(() => {
     if(isIconPopoverOpen) {
-      // This log helps confirm if the popover open state triggers effects as expected.
       console.log("[HabitForm] Icon Popover Opened. Available icons count (from effect):", availableIcons.length);
       if (availableIcons.length > 0) {
         console.log("[HabitForm] First 5 available icons (from effect):", availableIcons.slice(0,5));
@@ -192,7 +199,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                 </PopoverTrigger>
                 <PopoverContent
                   className="w-[--radix-popover-trigger-width] p-0"
-                  align="start" // Ensure it aligns with the trigger
+                  align="start"
                 >
                    <Input
                       placeholder="Search icons..."
@@ -204,9 +211,9 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                         <div className="grid grid-cols-4 gap-1">
                         {filteredIcons.map(iconName => {
                           const IconComponent = (LucideIcons as any)[iconName];
-                          if (typeof IconComponent !== 'function') {
-                            // This should ideally not happen if availableIcons is filtered correctly
-                            console.warn(`[HabitForm] IconComponent for ${iconName} is not a function and was skipped.`);
+                           // Basic check if it's a function or a valid React element type (like forwardRef components)
+                          if (!(typeof IconComponent === 'function' || (typeof IconComponent === 'object' && IconComponent !== null && ('$$typeof' in IconComponent || 'render' in IconComponent)))) {
+                            console.warn(`[HabitForm] IconComponent for ${iconName} is not renderable and was skipped.`);
                             return null;
                           }
                           try {
@@ -217,7 +224,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                                 onClick={() => {
                                   field.onChange(iconName);
                                   setIsIconPopoverOpen(false);
-                                  setIconSearch(""); // Reset search on selection
+                                  setIconSearch(""); 
                                 }}
                                 role="button"
                                 tabIndex={0}
@@ -225,7 +232,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                                     if (e.key === 'Enter' || e.key === ' ') {
                                         field.onChange(iconName);
                                         setIsIconPopoverOpen(false);
-                                        setIconSearch(""); // Reset search on selection
+                                        setIconSearch(""); 
                                     }
                                 }}
                               >
@@ -239,7 +246,6 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                           }
                         })}
                         </div>
-                        {/* Refined conditional messages */}
                         {availableIcons.length === 0 && (
                             <p className="p-2 text-sm text-muted-foreground text-center col-span-4">No icons available to display.</p>
                         )}
