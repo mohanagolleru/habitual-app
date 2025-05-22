@@ -237,7 +237,7 @@ export default function HomePage() {
           isSubmitting={isSubmitting}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start max-w-7xl mx-auto">
           <div className="md:col-span-1 space-y-4 flex flex-col items-start md:items-center">
             <DailySummary habits={habits} currentDate={currentDateContext} className="w-full"/>
             <HabitCalendar 
@@ -253,7 +253,7 @@ export default function HomePage() {
              )}
           </div>
 
-          <div className="md:col-span-2">
+          <div className="md:col-span-3">
             {habits.length > 0 ? (
               <HabitList
                 habits={habits}
@@ -296,3 +296,4 @@ export default function HomePage() {
     </div>
   );
 }
+
