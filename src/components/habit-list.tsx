@@ -1,7 +1,7 @@
 
 "use client";
 
-import type * as React from 'react';
+import * as React from 'react';
 import type { Habit } from "@/lib/types";
 import { HabitItem } from "./habit-item";
 // import { isHabitCompletedOnDate } from '@/lib/actions'; // Removed this, not directly used here but good to be aware
