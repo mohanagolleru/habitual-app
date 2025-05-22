@@ -1,10 +1,10 @@
 
 import type { Metadata } from 'next';
-import { Inter, Fira_Code } from 'next/font/google';
+import { Space_Grotesk, Fira_Code } from 'next/font/google';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
-const inter = Inter({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   variable: '--font-sans',
 });
@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body className={`${inter.variable} ${firaCode.variable} font-sans antialiased`} suppressHydrationWarning={true}>
+      <body className={`${spaceGrotesk.variable} ${firaCode.variable} font-sans antialiased`} suppressHydrationWarning={true}>
         {children}
         <Toaster />
       </body>
