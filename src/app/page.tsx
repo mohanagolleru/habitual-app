@@ -237,7 +237,7 @@ export default function HomePage() {
           isSubmitting={isSubmitting}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start max-w-6xl mx-auto">
           <div className="md:col-span-1 space-y-4">
             <DailySummary habits={habits} currentDate={currentDateContext} className="max-w-xs mx-auto"/>
             <HabitCalendar 
