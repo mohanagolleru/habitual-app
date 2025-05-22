@@ -225,7 +225,7 @@ export default function HomePage() {
   const currentDateContext = selectedDate || new Date();
 
   if (!isMounted) {
-    return <div className="flex justify-center items-center min-h-screen"><p>Loading habits...</p></div>;
+    return <div className="flex justify-center items-center min-h-screen" suppressHydrationWarning={true}><p>Loading habits...</p></div>;
   }
 
   return (
