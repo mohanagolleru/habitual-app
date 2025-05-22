@@ -120,7 +120,10 @@ export function HabitItem({
           <Button
             onClick={handleToggleCompletion}
             variant={isCompletedForCurrentDate ? "default" : "outline"}
-            className={`min-w-[140px] ${isCompletedForCurrentDate ? habit.color : ''} ${isCompletedForCurrentDate ? (habit.color.includes('yellow') || habit.color.includes('lime') || habit.color.includes('amber') || habit.color.includes('cyan') ? 'text-black hover:text-black/90' : 'text-white hover:text-white/90') : '' } hover:${isCompletedForCurrentDate ? habit.color.replace('-500', '-600').replace('-400', '-500') : ''}`}
+            className={cn(
+              "min-w-[140px]",
+              isCompletedForCurrentDate && "bg-green-600 hover:bg-green-700 text-white"
+            )}
           >
             {isCompletedForCurrentDate ? (
               <CheckCircle2 className="mr-2 h-5 w-5" />
