@@ -30,7 +30,6 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
     monthly: "Monthly",
   };
 
-  // Determine text color for icon based on habit.color brightness for high contrast (black or white)
   const iconTextColor = habit.color.includes('yellow-400') || habit.color.includes('lime-500') || habit.color.includes('cyan-500') || habit.color.includes('amber-500') ? 'text-black' : 'text-white';
 
 
@@ -40,7 +39,7 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
                 <span className={cn("p-1.5 rounded-lg", habit.color)}>
-                <IconComponent className={cn("h-6 w-6", iconTextColor)} />
+                <IconComponent className={cn("h-6 w-6", iconTextColor)} style={{ shapeRendering: 'crispEdges' }} />
                 </span>
                 <div>
                 <CardTitle className="text-lg">{habit.title}</CardTitle>

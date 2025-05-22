@@ -38,14 +38,13 @@ export function HabitItem({ habit, onToggleCompletion, onDeleteHabit, onEditHabi
     monthly: "Monthly",
   };
   
-  // Determine text color for icon based on habit.color brightness for high contrast (black or white)
   const iconTextColor = habit.color.includes('yellow-400') || habit.color.includes('lime-500') || habit.color.includes('cyan-500') || habit.color.includes('amber-500') ? 'text-black' : 'text-white';
 
   return (
     <Card className="shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col h-full">
       <CardHeader className="flex-row items-start gap-4 space-y-0 pb-3">
         <span className={cn("p-2 rounded-lg", habit.color)}>
-          <IconComponent className={cn("h-8 w-8", iconTextColor)} />
+          <IconComponent className={cn("h-8 w-8", iconTextColor)} style={{ shapeRendering: 'crispEdges' }} />
         </span>
         <div className="flex-1">
           <CardTitle className="text-xl">{habit.title}</CardTitle>
