@@ -107,11 +107,22 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
         const isUpper = key[0] === key[0].toUpperCase();
         // Check if it's not one of the known non-icon exports
         const notExcluded = !LUCIDE_EXCLUDED_KEYS.includes(key);
-        // Check if it's a function OR a non-null object (Lucide icons are ForwardRef objects)
-        const isComponentLike = typeof potentialIcon === 'function' || (typeof potentialIcon === 'object' && potentialIcon !== null);
+        
+        // Check if it's a function OR a non-null object that looks like a React component
+        // (e.g., forwardRef components have $$typeof, class components might have render, functional components are functions)
+        // Lucide icons are ForwardRefExoticComponent, which are objects with $$typeof: Symbol(react.forward_ref)
+        const isComponentLike = 
+          typeof potentialIcon === 'function' || 
+          (typeof potentialIcon === 'object' && 
+           potentialIcon !== null && 
+           (typeof (potentialIcon as any).render === 'function' || // For class components or objects with a render method
+            (potentialIcon as any).$$typeof === Symbol.for('react.forward_ref') || // For forwardRef components
+            (potentialIcon as any).$$typeof === Symbol.for('react.element') // For React elements (less common for library exports)
+           )
+          );
 
         if (isUpper && notExcluded && !isComponentLike) {
-            console.log(`[HabitForm] Candidate ${key} excluded: not component-like. Type: ${typeof potentialIcon}`);
+            console.log(`[HabitForm] Candidate ${key} excluded: not component-like. Type: ${typeof potentialIcon}, $$typeof: ${(potentialIcon as any)?.$$typeof}, Keys: ${potentialIcon ? Object.keys(potentialIcon) : 'null'}`);
         }
         
         return isComponentLike && isUpper && notExcluded;
