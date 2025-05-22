@@ -108,10 +108,10 @@ export function HabitItem({
         </div>
       </CardContent>
       <CardFooter className="flex justify-center items-center gap-2 border-t pt-3 pb-3 mt-auto">
-        <Button variant="outline" size="icon" onClick={() => onEditHabit(habit)} aria-label="Edit habit">
+        <Button variant="outline" size="icon" onClick={() => onEditHabit(habit)} aria-label="Edit habit" className="flex-shrink-0">
             <Edit3 className="h-4 w-4" />
         </Button>
-        <Button variant="outline" size="icon" onClick={() => onDeleteHabit(habit.id)} aria-label="Delete habit">
+        <Button variant="outline" size="icon" onClick={() => onDeleteHabit(habit.id)} aria-label="Delete habit" className="flex-shrink-0">
             <Trash2 className="h-4 w-4" />
         </Button>
         {canLogForThisDate && habitExistsOnThisDate && (
@@ -128,7 +128,7 @@ export function HabitItem({
             {isCompletedForCurrentDate ? (
               <CheckCircle2 className="mr-2 h-5 w-5" />
             ) : (
-              <Circle className="mr-2 h-5 w-5 text-log-today-text" />
+              <Circle className="mr-2 h-5 w-5" />
             )}
             {isCompletedForCurrentDate ? "Done" : "Log now"}
           </Button>
@@ -143,3 +143,5 @@ export function HabitItem({
     </Card>
   );
 }
+
+    
