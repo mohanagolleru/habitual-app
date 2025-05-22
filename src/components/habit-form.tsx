@@ -77,7 +77,7 @@ const LUCIDE_EXCLUDED_KEYS = [
   'LucideProvider',
   'toPascalCase',
   'default',
-  'icons', 
+  'icons',
   'createLucideIcon'
 ];
 
@@ -99,14 +99,16 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     return Object.keys(LucideIcons)
       .filter(key => {
         const potentialIcon = (LucideIcons as any)[key];
-        return typeof potentialIcon === 'function' && 
-               key[0] === key[0].toUpperCase() &&   
-               !LUCIDE_EXCLUDED_KEYS.includes(key); 
+        // Check if it's a function (React component) and starts with an uppercase letter (convention for components)
+        // And it's not in our exclusion list
+        return typeof potentialIcon === 'function' &&
+               key[0] === key[0].toUpperCase() &&
+               !LUCIDE_EXCLUDED_KEYS.includes(key);
       })
       .sort();
   }, []);
 
-  const filteredIcons = availableIcons.filter(iconName => 
+  const filteredIcons = availableIcons.filter(iconName =>
     iconName.toLowerCase().includes(iconSearch.toLowerCase())
   );
 
@@ -172,9 +174,9 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                   <Input 
-                      placeholder="Search icons..." 
-                      value={iconSearch} 
+                   <Input
+                      placeholder="Search icons..."
+                      value={iconSearch}
                       onChange={(e) => setIconSearch(e.target.value)}
                       className="m-2 w-[calc(100%-1rem)] border-input"
                     />
@@ -182,18 +184,19 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                     <div className="grid grid-cols-4 gap-1 p-2">
                     {filteredIcons.map(iconName => {
                       const IconComponent = (LucideIcons as any)[iconName];
-                      if (!IconComponent || typeof IconComponent === 'string') {
+                      if (typeof IconComponent !== 'function') {
+                        // Additional check in case something non-functional slips through
                         return null;
                       }
                       try {
                         return (
                           <div
                             key={iconName}
-                            className="p-2 flex flex-col items-center cursor-pointer hover:bg-accent rounded-md"
+                            className="p-1 flex flex-col items-center justify-center cursor-pointer hover:bg-accent rounded-sm"
                             onClick={() => {
                               field.onChange(iconName);
                               setIsIconPopoverOpen(false);
-                              setIconSearch(""); 
+                              setIconSearch("");
                             }}
                             role="button"
                             tabIndex={0}
@@ -205,12 +208,13 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                                 }
                             }}
                           >
-                            <IconComponent className="h-6 w-6" style={{ color: 'red' }} />
-                            <span className="text-xs mt-1 text-center truncate w-full">{iconName}</span>
+                            <IconComponent size={20} color="red" />
+                            <span className="text-xs mt-0.5 text-center truncate w-full">{iconName}</span>
                           </div>
                         );
                       } catch (e) {
-                        return <div key={iconName} className="p-2 text-xs text-red-500">Error: {iconName}</div>;
+                        console.error(`Error rendering icon ${iconName}:`, e);
+                        return <div key={iconName} className="p-2 text-xs text-red-500">Error: {iconName} ({String(e)})</div>;
                       }
                     })}
                     {filteredIcons.length === 0 && <p className="p-2 text-sm text-muted-foreground col-span-4 text-center">No icons found.</p>}
@@ -259,7 +263,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
             </FormItem>
           )}
         />
-        
+
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? "Saving..." : (initialData?.id ? "Save Changes" : "Create Habit")}
         </Button>
@@ -267,5 +271,3 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     </Form>
   );
 }
-
-    
