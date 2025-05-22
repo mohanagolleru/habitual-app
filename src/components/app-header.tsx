@@ -21,7 +21,7 @@ export function AppHeader({ onOpenAddHabitDialog }: AppHeaderProps) {
         <Link href="/" className="text-3xl font-bold text-primary text-center">
           Habitual
         </Link>
-        <div className="flex-1 flex justify-end pr-8"> {/* Added pr-8 here */}
+        <div className="flex-1 flex justify-end pr-16"> {/* Changed pr-8 to pr-16 */}
           <div className="flex items-center gap-4">
             <Link href="/heatmap" passHref>
               <Button variant="outline" size="lg">
