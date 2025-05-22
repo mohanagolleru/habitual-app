@@ -5,6 +5,7 @@ import * as React from 'react';
 import { Button } from "@/components/ui/button";
 import { PlusSquare, LayoutGrid } from "lucide-react";
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 interface AppHeaderProps {
   onOpenAddHabitDialog: () => void;
@@ -28,7 +29,11 @@ export function AppHeader({ onOpenAddHabitDialog }: AppHeaderProps) {
                 Heatmap
               </Button>
             </Link>
-            <Button onClick={onOpenAddHabitDialog} variant="default" size="lg">
+            <Button 
+              onClick={onOpenAddHabitDialog} 
+              size="lg"
+              className="bg-[#ADFF2F] hover:bg-[#98e61a] text-black"
+            >
               <PlusSquare className="mr-2 h-5 w-5" />
               Add New Habit
             </Button>
