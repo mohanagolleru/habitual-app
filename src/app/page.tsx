@@ -238,7 +238,7 @@ export default function HomePage() {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start max-w-6xl mx-auto">
-          <div className="md:col-span-1 space-y-4 flex flex-col items-start md:items-end">
+          <div className="md:col-span-1 space-y-4 flex flex-col items-start md:items-center">
             <DailySummary habits={habits} currentDate={currentDateContext} className="max-w-xs w-full"/>
             <HabitCalendar 
               habits={habits} 
