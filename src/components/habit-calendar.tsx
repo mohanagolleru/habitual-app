@@ -7,6 +7,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { parseISO } from "date-fns";
 import { isHabitCompletedOnDate } from '@/lib/habit-utils';
+import { cn } from '@/lib/utils';
 
 
 interface HabitCalendarProps {
@@ -44,7 +45,7 @@ export function HabitCalendar({ habits, selectedDate, onSelectDate, className }:
   }, [habits]);
 
   return (
-    <Card className={`shadow-lg ${className}`}>
+    <Card className={cn("shadow-md", className)}>
       <CardHeader>
         <CardTitle className="text-xl font-semibold text-center">Activity Calendar</CardTitle>
       </CardHeader>
@@ -71,4 +72,3 @@ export function HabitCalendar({ habits, selectedDate, onSelectDate, className }:
     </Card>
   );
 }
-

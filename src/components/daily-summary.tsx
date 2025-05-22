@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { isHabitCompletedOnDate } from '@/lib/habit-utils'; 
 import { format, isToday, differenceInCalendarDays, parseISO } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 interface DailySummaryProps {
   habits: Habit[];
@@ -31,7 +32,7 @@ export function DailySummary({ habits, currentDate }: DailySummaryProps) {
   const titleText = isToday(currentDate) ? "Today's Progress" : `Progress on ${format(currentDate, 'MMMM d, yyyy')}`;
 
   return (
-    <Card className="shadow-lg">
+    <Card className="shadow-md">
       <CardHeader>
         <CardTitle className="text-xl font-semibold text-center">
           {titleText}
@@ -41,7 +42,7 @@ export function DailySummary({ habits, currentDate }: DailySummaryProps) {
         {totalRelevantHabits > 0 ? (
           <>
             <div className="text-center">
-              <p className="text-4xl font-bold text-accent">
+              <p className="text-3xl font-bold text-accent">
                 {completedCount} / {totalRelevantHabits}
               </p>
               <p className="text-sm text-muted-foreground">habits completed</p>
@@ -57,4 +58,3 @@ export function DailySummary({ habits, currentDate }: DailySummaryProps) {
     </Card>
   );
 }
-

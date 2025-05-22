@@ -74,7 +74,7 @@ export default function HeatmapPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="py-6 border-b">
+      <header className="py-4 border-b">
         <div className="container mx-auto flex items-center justify-between">
           <Link href="/" passHref>
             <Button variant="outline" size="icon" aria-label="Back to Home">
@@ -86,7 +86,7 @@ export default function HeatmapPage() {
             <Button variant="outline" size="icon" onClick={handlePreviousYear} aria-label="Previous year">
               <ChevronLeft className="h-5 w-5" />
             </Button>
-            <span className="text-xl font-semibold w-20 text-center">{currentYear}</span>
+            <span className="text-xl font-semibold min-w-[5rem] text-center">{currentYear}</span>
             <Button variant="outline" size="icon" onClick={handleNextYear} aria-label="Next year" disabled={currentYear === new Date().getFullYear()}>
               <ChevronRight className="h-5 w-5" />
             </Button>
@@ -112,7 +112,7 @@ export default function HeatmapPage() {
           </div>
         )}
       </main>
-       <footer className="py-6 text-center text-muted-foreground">
+       <footer className="py-4 text-center text-muted-foreground">
         <p>&copy; {new Date().getFullYear()} Habitual. Keep building those habits!</p>
       </footer>
     </div>
