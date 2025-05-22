@@ -5,7 +5,7 @@ import * as React from 'react';
 import type { Habit } from "@/lib/types";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { format, isSameDay, parseISO } from "date-fns";
+import { parseISO } from "date-fns";
 import { isHabitCompletedOnDate } from '@/lib/habit-utils';
 
 
@@ -33,7 +33,10 @@ export function HabitCalendar({ habits, selectedDate, onSelectDate, className }:
     
     allCompletionDates.forEach(dateStr => {
         const date = parseISO(dateStr); 
-        if (habits.some(habit => isHabitCompletedOnDate(habit, date))) { // Double check with frequency logic
+        // Ensure the habit was actually completable on this date according to its own logic (frequency etc.)
+        // This check might be slightly redundant if `habit.completions` is always accurate,
+        // but good for robustness.
+        if (habits.some(habit => isHabitCompletedOnDate(habit, date))) {
             dates.push(date);
         }
     });
@@ -55,9 +58,12 @@ export function HabitCalendar({ habits, selectedDate, onSelectDate, className }:
             completed: completedDays,
           }}
           modifiersClassNames={{
-            completed: "border border-accent rounded-full",
-            selected: "bg-primary text-primary-foreground rounded-full",
-            today: "text-accent font-bold border-primary"
+            completed: "bg-accent text-accent-foreground rounded-full",
+            selected: "bg-primary text-primary-foreground rounded-full ring-1 ring-offset-background ring-primary-foreground/50",
+            today: "border-2 border-ring text-foreground font-semibold rounded-full",
+            // Default ShadCN styles that we might want to ensure are not lost or can be customized further:
+            // day_outside: "day-outside text-muted-foreground opacity-50", // Default from Shadcn
+            // day_disabled: "text-muted-foreground opacity-50", // Default from Shadcn
           }}
           disabled={(date) => date > new Date()} // Disable future dates
         />
