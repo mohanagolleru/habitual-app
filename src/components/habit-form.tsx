@@ -26,9 +26,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import * as LucideIcons from 'lucide-react';
+import { Smile } from 'lucide-react'; // Specific import for placeholder
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Check, Palette, Smile as SmileIcon } from 'lucide-react'; // Renamed Smile to SmileIcon to avoid conflict
+import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const habitFormSchema = z.object({
@@ -47,89 +48,6 @@ interface HabitFormProps {
   initialData?: Partial<Habit>;
   isSubmitting: boolean;
 }
-
-const PREDEFINED_ICONS: string[] = [
-  'Activity',
-  'AlarmClockCheck',
-  'Apple',
-  'Archive',
-  'Award',
-  'Ban',
-  'Banknote',
-  'BeanOff',
-  'Bed',
-  'Bike',
-  'BookOpen',
-  'BookOpenText',
-  'Brain',
-  'Briefcase',
-  'Calculator',
-  'CalendarDays',
-  'CandyOff',
-  'Cat',
-  'CheckCircle2',
-  'ChefHat',
-  'CigaretteOff',
-  'ClipboardList',
-  'Clock',
-  'CookingPot',
-  'CreditCard',
-  'Dental',
-  'Dog',
-  'Dumbbell',
-  'Ear',
-  'FastForward',
-  'Footprints',
-  'GlassWater',
-  'Goal',
-  'GraduationCap',
-  'Handshake',
-  'HeartHandshake',
-  'HeartPulse',
-  'HelpingHand',
-  'Home',
-  'Hourglass',
-  'Languages',
-  'Laptop',
-  'Leaf',
-  'Lightbulb',
-  'ListTodo',
-  'Lotus',
-  'MonitorOff',
-  'Moon',
-  'Move',
-  'Paintbrush',
-  'PartyPopper',
-  'PawPrint',
-  'PenTool',
-  'PersonStanding',
-  'Phone',
-  'PiggyBank',
-  'Pill',
-  'Recycle',
-  'Run',
-  'Salad',
-  'Sandwich',
-  'ShieldCheck',
-  'Shirt',
-  'Smile',
-  'SprayCan',
-  'Sprout',
-  'Star',
-  'Sunrise',
-  'Target',
-  'Timer',
-  'Trash2',
-  'TrendingUp',
-  'Trophy',
-  'Users',
-  'Utensils',
-  'Vote',
-  'Waves',
-  'Yoga',
-  'Zap'
-].sort();
-
 
 const COLOR_PALETTE: { name: string; class: string; textColor: string }[] = [
   { name: 'Red', class: 'bg-red-500', textColor: 'text-white' },
@@ -152,6 +70,18 @@ const COLOR_PALETTE: { name: string; class: string; textColor: string }[] = [
 ];
 const DEFAULT_COLOR_CLASS = 'bg-blue-500';
 
+// List of known non-icon exports from lucide-react
+const LUCIDE_EXCLUDED_KEYS = [
+  'createElement',
+  'IconNode',
+  'LucideProps',
+  'LucideProvider',
+  'toPascalCase',
+  'default',
+  'icons', // This is an object map of icons, not a component
+  'createLucideIcon' // Helper function
+];
+
 export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProps) {
   const form = useForm<HabitFormValues>({
     resolver: zodResolver(habitFormSchema),
@@ -166,7 +96,18 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
   const [iconSearch, setIconSearch] = React.useState("");
   const [isIconPopoverOpen, setIsIconPopoverOpen] = React.useState(false);
 
-  const filteredIcons = PREDEFINED_ICONS.filter(iconName => 
+  const availableIcons = React.useMemo(() => {
+    return Object.keys(LucideIcons)
+      .filter(key => {
+        const potentialIcon = (LucideIcons as any)[key];
+        return typeof potentialIcon === 'function' && // Is a function (React component)
+               key[0] === key[0].toUpperCase() &&   // Starts with an uppercase letter
+               !LUCIDE_EXCLUDED_KEYS.includes(key); // Not in the exclusion list
+      })
+      .sort();
+  }, []);
+
+  const filteredIcons = availableIcons.filter(iconName => 
     iconName.toLowerCase().includes(iconSearch.toLowerCase())
   );
 
@@ -226,7 +167,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                           {field.value}
                         </>
                       ) : (
-                        <> <SmileIcon className="mr-2 h-4 w-4" /> Select icon </>
+                        <> <Smile className="mr-2 h-4 w-4" /> Select icon </>
                       )}
                     </Button>
                   </FormControl>
@@ -242,7 +183,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                     <div className="grid grid-cols-4 gap-1 p-2">
                     {filteredIcons.map(iconName => {
                       const IconComponent = (LucideIcons as any)[iconName];
-                      if (!IconComponent || typeof IconComponent === 'string') return null; // Ensure it's a component
+                      if (!IconComponent || typeof IconComponent === 'string') return null;
                       return (
                         <Button
                           type="button"
