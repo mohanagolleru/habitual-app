@@ -77,7 +77,7 @@ export function HabitItem({
     >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 py-3 px-4">
         <div className="flex-grow mr-2 overflow-hidden">
-          <CardTitle className="text-4xl truncate">{habit.title}</CardTitle>
+          <CardTitle className="text-xl truncate">{habit.title}</CardTitle>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <span className="p-0">
