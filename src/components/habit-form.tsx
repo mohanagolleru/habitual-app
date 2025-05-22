@@ -76,12 +76,96 @@ const LUCIDE_EXCLUDED_KEYS = [
   'LucideProps',
   'LucideProvider',
   'toPascalCase',
-  'default', 
-  'icons',   
+  'default',
+  'icons',
   'createLucideIcon',
-  'ICON_NAMES', 
-  'version', 
+  'ICON_NAMES',
+  'version',
 ];
+
+// Curated list of predefined icons
+const PREDEFINED_ICONS: string[] = [
+  'Activity',        // General activity, exercise
+  'AlarmClockCheck', // Waking up, time management
+  'Apple',           // Healthy eating
+  'Archive',         // Decluttering, organizing
+  'Award',           // Achievements, goals
+  'Ban',             // Quitting bad habits (smoking, alcohol)
+  'Banknote',        // Saving money, budgeting
+  'BeanOff',         // Limiting caffeine/sugar
+  'Bed',             // Sleep, going to bed early
+  'Bike',            // Exercise
+  'BookOpen',        // Reading
+  'BookOpenText',    // Journaling, learning
+  'Brain',           // Learning new skills, mental wellness
+  'Briefcase',       // Work, prioritizing tasks
+  'Calculator',      // Tracking expenses, budgeting
+  'CalendarDays',    // Meal planning, setting goals
+  'CandyOff',        // Reducing sugar intake
+  'Cat',             // Pet care
+  'CheckCircle2',    // Completing tasks, small victories
+  'ChefHat',         // Cooking at home
+  'CigaretteOff',    // Quitting smoking
+  'ClipboardList',   // Prioritizing tasks, to-do lists
+  'Clock',           // Managing time effectively
+  'CookingPot',      // Meal planning, cooking
+  'CreditCard',      // Paying bills on time, avoiding impulse purchases
+  'Dental',          // Flossing, brushing teeth
+  'Dog',             // Pet care
+  'Dumbbell',        // Exercising daily
+  'Ear',             // Listening actively
+  'FastForward',     // Avoiding procrastination
+  'Footprints',      // Walking more
+  'GlassWater',      // Drinking enough water
+  'Goal',            // Setting realistic goals
+  'GraduationCap',   // Learning new skills, lifelong learning
+  'Handshake',       // Networking, building relationships
+  'HeartHandshake',  // Forgiving others, empathy, quality time with loved ones
+  'HeartPulse',      // Getting regular check-ups, managing stress
+  'HelpingHand',     // Helping others, volunteering
+  'Home',            // Making your bed, doing dishes, cleaning up
+  'Hourglass',       // Practicing patience, time management
+  'Languages',       // Learning a new language
+  'Laptop',          // Limiting screen time, work/study
+  'Leaf',            // Spending time in nature, recycling, conserving energy
+  'Lightbulb',       // Practicing gratitude, positive self-talk
+  'ListTodo',        // Completing tasks on time
+  'Lotus',           // Meditating, practicing self-compassion
+  'MonitorOff',      // Limiting screen time
+  'Moon',            // Going to bed early
+  'Move',            // Stretching regularly, taking the stairs
+  'Paintbrush',      // Engaging in creative hobbies
+  'PartyPopper',     // Celebrating small victories
+  'PawPrint',        // Responsible pet owner
+  'PenTool',         // Journaling, writing
+  'PersonStanding',  // Improving posture
+  'Phone',           // Calling family regularly
+  'PiggyBank',       // Saving money
+  'Pill',            // Taking vitamins
+  'Recycle',         // Recycling
+  'Run',             // Exercising daily
+  'Salad',           // Eating a balanced diet, mindful eating
+  'Sandwich',        // Packing lunches
+  'ShieldCheck',     // Setting boundaries, saying "no"
+  'Shirt',           // Planning outfits
+  'Smile',           // Saying "please" and "thank you", sincere compliments
+  'SprayCan',        // Cleaning, decluttering
+  'Sprout',          // Practicing self-care, personal growth
+  'Star',            // Achieving goals
+  'Sunrise',         // Waking up early
+  'Target',          // Setting goals
+  'Timer',           // Managing time
+  'Trash2',          // Decluttering
+  'TrendingUp',      // Investing, tracking expenses
+  'Trophy',          // Celebrating achievements
+  'Users',           // Building strong relationships
+  'Utensils',        // Eating a balanced diet, cooking at home
+  'Vote',            // Voting, civic engagement
+  'Waves',           // Deep breathing exercises
+  'Yoga',            // Meditating, stretching
+  'Zap'              // Quick tasks, energy
+].sort();
+
 
 export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProps) {
   const form = useForm<HabitFormValues>({
@@ -89,7 +173,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     defaultValues: {
       title: initialData?.title || "",
       frequency: initialData?.frequency || "daily",
-      icon: initialData?.icon || "Target", 
+      icon: initialData?.icon || "Target",
       color: initialData?.color || DEFAULT_COLOR_CLASS,
     },
   });
@@ -97,12 +181,9 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
   const [iconSearch, setIconSearch] = React.useState("");
   const [isIconPopoverOpen, setIsIconPopoverOpen] = React.useState(false);
 
-  // DIAGNOSTIC: Use a hardcoded short list of known good icons
   const availableIcons = React.useMemo(() => {
-    console.log("[HabitForm] Using DIAGNOSTIC hardcoded icon list.");
-    const hardcodedIcons = ['Activity', 'Smile', 'Airplay', 'AlarmClock', 'Award', 'Anchor'];
-    // Verify these exist in LucideIcons and are valid components
-    const verifiedIcons = hardcodedIcons.filter(key => {
+    console.log("[HabitForm] Using PREDEFINED_ICONS list.");
+    const verifiedIcons = PREDEFINED_ICONS.filter(key => {
         const potentialIcon = (LucideIcons as any)[key];
         const isForwardRef = typeof potentialIcon === 'object' &&
                              potentialIcon !== null &&
@@ -112,37 +193,9 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
         }
         return isForwardRef;
     });
-    console.log("[HabitForm DIAGNOSTIC] Verified hardcoded icons:", verifiedIcons);
+    console.log("[HabitForm DIAGNOSTIC] Verified hardcoded icons:", verifiedIcons.length, verifiedIcons);
     return verifiedIcons;
   }, []);
-
-  // const availableIcons = React.useMemo(() => {
-  //   const allKeys = Object.keys(LucideIcons);
-  //   console.log("[HabitForm] All keys from LucideIcons import:", allKeys.length, allKeys.slice(0, 30));
-
-  //   const icons = allKeys
-  //     .filter(key => {
-  //       const potentialIcon = (LucideIcons as any)[key];
-        
-  //       const isForwardRefComponent =
-  //         typeof potentialIcon === 'object' &&
-  //         potentialIcon !== null &&
-  //         (potentialIcon as any).$$typeof === Symbol.for('react.forward_ref');
-        
-  //       const isUpper = key[0] === key[0].toUpperCase(); 
-  //       const notExcluded = !LUCIDE_EXCLUDED_KEYS.includes(key);
-        
-  //       if (isUpper && notExcluded && !isForwardRefComponent) {
-  //           console.log(`[HabitForm] Candidate ${key} excluded: not a ForwardRef component. Type: ${typeof potentialIcon}, $$typeof: ${(potentialIcon as any)?.$$typeof}, Keys: ${potentialIcon ? Object.keys(potentialIcon) : 'null'}`);
-  //       }
-        
-  //       return isForwardRefComponent && isUpper && notExcluded;
-  //     })
-  //     .sort();
-  //   console.log("[HabitForm] Computed availableIcons after filtering:", icons.length, icons.slice(0, 5));
-  //   return icons;
-  // }, []);
-
 
   const filteredIcons = availableIcons.filter(iconName =>
     iconName.toLowerCase().includes(iconSearch.toLowerCase())
@@ -214,30 +267,30 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                       {field.value && (LucideIcons as any)[field.value] && typeof (LucideIcons as any)[field.value] === 'object' && (LucideIcons as any)[field.value].$$typeof === Symbol.for('react.forward_ref') ? (
                         React.createElement((LucideIcons as any)[field.value], { className: "mr-2 h-4 w-4" })
                       ) : (
-                        <Smile className="mr-2 h-4 w-4" /> 
+                        <Smile className="mr-2 h-4 w-4" />
                       )}
                       {field.value && (LucideIcons as any)[field.value] && typeof (LucideIcons as any)[field.value] === 'object' && (LucideIcons as any)[field.value].$$typeof === Symbol.for('react.forward_ref') ? field.value : "Select icon"}
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent
-                  className="w-[--radix-popover-trigger-width] p-0" 
+                  className="w-[--radix-popover-trigger-width] p-0"
                   align="start"
                 >
                    <Input
                       placeholder="Search icons..."
                       value={iconSearch}
                       onChange={(e) => setIconSearch(e.target.value)}
-                      className="m-2 mb-0 w-[calc(100%-1rem)] border-input" 
+                      className="m-2 mb-0 w-[calc(100%-1rem)] border-input"
                     />
-                    <ScrollArea className="h-[250px] p-2"> 
+                    <ScrollArea className="h-[250px] p-2">
                         <div className="grid grid-cols-4 gap-1">
                         {filteredIcons.map(iconName => {
                           const IconComponent = (LucideIcons as any)[iconName];
-                          
+
                           if (!IconComponent || typeof IconComponent !== 'object' || (IconComponent as any).$$typeof !== Symbol.for('react.forward_ref')) {
                             console.warn(`[HabitForm] IconComponent for '${iconName}' is undefined or not a valid ForwardRef component in map loop and was skipped. Value:`, IconComponent);
-                            return null; 
+                            return null;
                           }
 
                           try {
@@ -248,7 +301,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                                 onClick={() => {
                                   field.onChange(iconName);
                                   setIsIconPopoverOpen(false);
-                                  setIconSearch(""); 
+                                  setIconSearch("");
                                 }}
                                 role="button"
                                 tabIndex={0}
@@ -256,7 +309,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                                     if (e.key === 'Enter' || e.key === ' ') {
                                         field.onChange(iconName);
                                         setIsIconPopoverOpen(false);
-                                        setIconSearch(""); 
+                                        setIconSearch("");
                                     }
                                 }}
                               >
@@ -328,4 +381,3 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     </Form>
   );
 }
-
