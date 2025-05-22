@@ -30,19 +30,16 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
     monthly: "Monthly",
   };
 
-  const iconTextColor = 'text-white'; // Consistently white icon glyph
-
-
   return (
     <Card className="shadow-md w-full">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-                <span className={cn("p-1.5 rounded-lg", habit.color)}>
-                <IconComponent 
-                    className={cn("h-6 w-6", iconTextColor)} 
+                <span className="p-1.5">
+                <IconComponent
+                    className={cn("h-6 w-6 text-primary")}
                     strokeWidth={1}
-                    style={{ shapeRendering: 'crispEdges', imageRendering: 'pixelated' }} 
+                    style={{ shapeRendering: 'crispEdges', imageRendering: 'pixelated' }}
                 />
                 </span>
                 <div>
@@ -64,7 +61,7 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex overflow-x-auto space-x-1 py-2"> {/* Reduced space-x-4 to space-x-1 */}
+        <div className="flex overflow-x-auto space-x-1 py-2">
           {ALL_MONTHS.map((monthIndex) => (
             <div key={monthIndex} className="flex flex-col items-center flex-shrink-0">
               <h4 className="text-sm font-medium mb-1 text-muted-foreground">{getMonthName(monthIndex)} {year}</h4>

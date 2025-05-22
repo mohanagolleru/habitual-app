@@ -16,7 +16,7 @@ interface HabitItemProps {
   onToggleCompletion: (habitId: string, date: string, completed: boolean) => void;
   onDeleteHabit: (habitId: string) => void;
   onEditHabit: (habit: Habit) => void;
-  currentDateContext: Date; 
+  currentDateContext: Date;
   isDragging: boolean;
   isDropTarget: boolean;
   onDragStartHandler: (e: React.DragEvent<HTMLDivElement>) => void;
@@ -27,11 +27,11 @@ interface HabitItemProps {
   onDragEndHandler: (e: React.DragEvent<HTMLDivElement>) => void;
 }
 
-export function HabitItem({ 
-  habit, 
-  onToggleCompletion, 
-  onDeleteHabit, 
-  onEditHabit, 
+export function HabitItem({
+  habit,
+  onToggleCompletion,
+  onDeleteHabit,
+  onEditHabit,
   currentDateContext,
   isDragging,
   isDropTarget,
@@ -43,7 +43,7 @@ export function HabitItem({
   onDragEndHandler
 }: HabitItemProps) {
   const IconComponent = (LucideIcons as any)[habit.icon] || LucideIcons.Target;
-  
+
   const isCompletedForCurrentDate = habit.completions[format(currentDateContext, 'yyyy-MM-dd')];
   const canLogForThisDate = dateIsToday(currentDateContext);
   const habitExistsOnThisDate = differenceInCalendarDays(currentDateContext, parseISO(habit.createdAt)) >= 0;
@@ -53,17 +53,15 @@ export function HabitItem({
       onToggleCompletion(habit.id, format(currentDateContext, 'yyyy-MM-dd'), !isCompletedForCurrentDate);
     }
   };
-  
+
   const frequencyTextMap = {
     daily: "Daily",
     weekly: "Weekly",
     monthly: "Monthly",
   };
-  
-  const iconTextColor = 'text-white'; 
 
   return (
-    <Card 
+    <Card
       className={cn(
         "shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col h-full",
         isDragging ? "opacity-50 cursor-grabbing" : "cursor-grab",
@@ -78,11 +76,11 @@ export function HabitItem({
       onDragEnd={onDragEndHandler}
     >
       <CardHeader className="flex-row items-start gap-4 space-y-0 pb-3">
-        <span className={cn("p-2 rounded-lg", habit.color)}>
-          <IconComponent 
-            className={cn("h-8 w-8", iconTextColor)} 
+        <span className="p-2">
+          <IconComponent
+            className={cn("h-8 w-8 text-primary")}
             strokeWidth={1}
-            style={{ shapeRendering: 'crispEdges', imageRendering: 'pixelated' }} 
+            style={{ shapeRendering: 'crispEdges', imageRendering: 'pixelated' }}
           />
         </span>
         <div className="flex-1">
@@ -119,10 +117,10 @@ export function HabitItem({
             </Button>
         </div>
         {canLogForThisDate && habitExistsOnThisDate && (
-          <Button 
-            onClick={handleToggleCompletion} 
+          <Button
+            onClick={handleToggleCompletion}
             variant={isCompletedForCurrentDate ? "default" : "outline"}
-            className={`min-w-[140px] ${isCompletedForCurrentDate ? 'bg-green-500 hover:bg-green-600 text-white' : ''}`}
+            className={`min-w-[140px] ${isCompletedForCurrentDate ? habit.color : ''} ${isCompletedForCurrentDate ? (habit.color.includes('yellow') || habit.color.includes('lime') || habit.color.includes('amber') || habit.color.includes('cyan') ? 'text-black hover:text-black/90' : 'text-white hover:text-white/90') : '' } hover:${isCompletedForCurrentDate ? habit.color.replace('-500', '-600').replace('-400', '-500') : ''}`}
           >
             {isCompletedForCurrentDate ? (
               <CheckCircle2 className="mr-2 h-5 w-5" />
