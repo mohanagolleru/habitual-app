@@ -71,9 +71,9 @@ export function MonthGrid({ year, month, completions, creationDate }: MonthGridP
           <div
             key={index}
             className={cn(
-              'w-5 h-5 rounded-sm flex items-center justify-center text-xs',
+              'w-5 h-5 rounded-sm', // Removed: flex items-center justify-center text-xs
               cell.day === null ? 'bg-transparent' : 'border border-transparent',
-              cell.isDisabled ? 'bg-muted/10 cursor-not-allowed' : 
+              cell.isDisabled ? 'bg-muted/10 cursor-not-allowed' :
               cell.isCompleted ? 'bg-accent text-accent-foreground' :
               cell.isTodayCell && !cell.isFutureCell ? 'border-primary border-2' :
               cell.isFutureCell ? 'bg-muted/20' :
@@ -89,3 +89,4 @@ export function MonthGrid({ year, month, completions, creationDate }: MonthGridP
     </div>
   );
 }
+
