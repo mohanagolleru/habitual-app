@@ -8,20 +8,20 @@ import { MonthGrid } from './month-grid';
 import * as LucideIcons from 'lucide-react';
 import { Flame, TrendingUp, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 interface HabitHeatmapCardProps {
   habit: Habit;
   year: number;
 }
 
-// Generate an array of month indices (0-11)
 const ALL_MONTHS = Array.from({ length: 12 }, (_, i) => i);
 
 export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
   const IconComponent = (LucideIcons as any)[habit.icon] || LucideIcons.Target;
 
   const getMonthName = (monthIndex: number): string => {
-    return format(new Date(year, monthIndex), 'MMMM'); // Full month name
+    return format(new Date(year, monthIndex), 'MMMM'); 
   };
   
   const frequencyTextMap = {
@@ -30,13 +30,17 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
     monthly: "Monthly",
   };
 
+  // Determine text color for icon based on habit.color brightness
+  const iconTextColor = habit.color.includes('yellow-400') || habit.color.includes('lime-500') || habit.color.includes('cyan-500') || habit.color.includes('amber-500') ? 'text-neutral-800' : 'text-white';
+
+
   return (
     <Card className="shadow-md w-full">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-                <span className="p-2 bg-primary/10 rounded-lg">
-                <IconComponent className="h-7 w-7 text-primary" />
+                <span className={cn("p-2 rounded-lg", habit.color)}>
+                <IconComponent className={cn("h-7 w-7", iconTextColor)} />
                 </span>
                 <div>
                 <CardTitle className="text-xl">{habit.title}</CardTitle>
@@ -66,6 +70,7 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
                 month={monthIndex}
                 completions={habit.completions}
                 creationDate={habit.createdAt}
+                habitColor={habit.color} 
               />
             </div>
           ))}

@@ -4,29 +4,27 @@
 import * as React from 'react';
 import type { Habit } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, Circle, Flame, TrendingUp, Trash2, Edit3, Calendar as CalendarIcon } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { format, isToday as dateIsToday, differenceInCalendarDays, parseISO } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 interface HabitItemProps {
   habit: Habit;
   onToggleCompletion: (habitId: string, date: string, completed: boolean) => void;
   onDeleteHabit: (habitId: string) => void;
   onEditHabit: (habit: Habit) => void;
-  currentDateContext: Date; // Current date context (could be today or selected from calendar)
+  currentDateContext: Date; 
 }
 
 export function HabitItem({ habit, onToggleCompletion, onDeleteHabit, onEditHabit, currentDateContext }: HabitItemProps) {
   const IconComponent = (LucideIcons as any)[habit.icon] || LucideIcons.Target;
   
   const isCompletedForCurrentDate = habit.completions[format(currentDateContext, 'yyyy-MM-dd')];
-  // Logging is only allowed if the currentDateContext is actually today.
   const canLogForThisDate = dateIsToday(currentDateContext);
-  // Habit must exist on this date to be logged
   const habitExistsOnThisDate = differenceInCalendarDays(currentDateContext, parseISO(habit.createdAt)) >= 0;
-
 
   const handleToggleCompletion = () => {
     if (canLogForThisDate && habitExistsOnThisDate) {
@@ -39,18 +37,20 @@ export function HabitItem({ habit, onToggleCompletion, onDeleteHabit, onEditHabi
     weekly: "Weekly",
     monthly: "Monthly",
   };
+  
+  // Determine text color for icon based on habit.color brightness
+  // This is a simplified heuristic. A more robust solution would involve color math.
+  const iconTextColor = habit.color.includes('yellow-400') || habit.color.includes('lime-500') || habit.color.includes('cyan-500') || habit.color.includes('amber-500') ? 'text-neutral-800' : 'text-white';
 
   return (
     <Card className="shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col h-full">
       <CardHeader className="flex-row items-start gap-4 space-y-0 pb-3">
-        <span className="p-2 bg-primary/10 rounded-lg">
-          <IconComponent className="h-8 w-8 text-primary" />
+        <span className={cn("p-2 rounded-lg", habit.color)}>
+          <IconComponent className={cn("h-8 w-8", iconTextColor)} />
         </span>
         <div className="flex-1">
           <CardTitle className="text-xl">{habit.title}</CardTitle>
-          {habit.description && (
-            <CardDescription className="text-sm mt-1">{habit.description}</CardDescription>
-          )}
+          {/* Description removed */}
         </div>
         <Badge variant="secondary" className="capitalize">
             <CalendarIcon className="w-3 h-3 mr-1" />

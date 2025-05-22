@@ -4,25 +4,24 @@
 import * as React from 'react';
 import { format, getDaysInMonth, startOfMonth, getDay, isToday, isFuture, isSameDay, parseISO } from 'date-fns';
 import { cn } from '@/lib/utils';
-import type { Habit } from '@/lib/types';
+import type { Habit } from '@/lib/types'; // Ensure Habit type is imported if needed, though not directly used in props
 
 interface MonthGridProps {
   year: number;
   month: number; // 0-indexed (0 for January, 11 for December)
   completions: Record<string, boolean>; // 'YYYY-MM-DD': true
   creationDate: string; // ISO string of when the habit was created
+  habitColor: string; // Tailwind CSS class for the habit's color e.g. 'bg-blue-500'
 }
 
 const DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-export function MonthGrid({ year, month, completions, creationDate }: MonthGridProps) {
+export function MonthGrid({ year, month, completions, creationDate, habitColor }: MonthGridProps) {
   const daysInMonth = getDaysInMonth(new Date(year, month));
   const firstDayOfMonth = startOfMonth(new Date(year, month));
   const habitCreatedAt = parseISO(creationDate);
 
-  // getDay returns 0 for Sunday, 1 for Monday, ..., 6 for Saturday.
-  // We want Monday to be the first day of the week (index 0).
-  let startingDayOfWeek = (getDay(firstDayOfMonth) + 6) % 7; // Monday is 0, Sunday is 6
+  let startingDayOfWeek = (getDay(firstDayOfMonth) + 6) % 7; 
 
   const cells = React.useMemo(() => {
     const monthCells: Array<{
@@ -31,15 +30,13 @@ export function MonthGrid({ year, month, completions, creationDate }: MonthGridP
       isCompleted: boolean;
       isTodayCell: boolean;
       isFutureCell: boolean;
-      isDisabled: boolean; // Before habit creation
+      isDisabled: boolean; 
     }> = [];
 
-    // Add padding cells for days before the first of the month
     for (let i = 0; i < startingDayOfWeek; i++) {
       monthCells.push({ day: null, date: null, isCompleted: false, isTodayCell: false, isFutureCell: false, isDisabled: false });
     }
 
-    // Add cells for each day of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const currentDate = new Date(year, month, day);
       const dateStr = format(currentDate, 'yyyy-MM-dd');
@@ -74,14 +71,13 @@ export function MonthGrid({ year, month, completions, creationDate }: MonthGridP
               'w-5 h-5 rounded-sm', 
               cell.day === null ? 'bg-transparent' : 'border border-transparent',
               cell.isDisabled ? 'bg-muted/10 cursor-not-allowed' :
-              cell.isCompleted ? 'bg-accent text-accent-foreground' :
+              cell.isCompleted ? habitColor : // Use habitColor here
               cell.isTodayCell && !cell.isFutureCell ? 'border-primary border-2' :
               cell.isFutureCell ? 'bg-muted/20' :
-              cell.day !== null ? 'bg-muted/30' : '' // Past, not completed
+              cell.day !== null ? 'bg-muted/30' : '' 
             )}
             title={cell.date ? format(cell.date, 'PPP') : undefined}
           >
-            {/* Optionally render day number for debugging, but design doesn't show it */}
           </div>
         ))}
       </div>

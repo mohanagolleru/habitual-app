@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { parseISO } from 'date-fns';
 
 const LOCAL_STORAGE_KEY = "habitsData_v1";
+const DEFAULT_HABIT_COLOR = "bg-blue-500";
 
 export default function HeatmapPage() {
   const [habits, setHabits] = React.useState<Habit[]>([]);
@@ -18,8 +19,7 @@ export default function HeatmapPage() {
   const { toast } = useToast();
   const [isMounted, setIsMounted] = React.useState(false);
 
-  React.useEffect(() => {
-    setIsMounted(true);
+  const loadHabitsFromStorage = React.useCallback(() => {
     try {
       const storedHabits = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (storedHabits) {
@@ -27,11 +27,12 @@ export default function HeatmapPage() {
         const validatedHabits = parsedHabits.map(h => ({
             ...h,
             icon: h.icon || 'Target',
+            color: h.color || DEFAULT_HABIT_COLOR,
             completions: h.completions || {},
             currentStreak: h.currentStreak || 0,
             longestStreak: h.longestStreak || 0,
             frequency: h.frequency || 'daily',
-            createdAt: h.createdAt || new Date(0).toISOString() // Ensure createdAt exists
+            createdAt: h.createdAt || new Date(0).toISOString() 
           })).sort((a,b) => parseISO(a.createdAt).getTime() - parseISO(b.createdAt).getTime());
         setHabits(validatedHabits);
       }
@@ -40,6 +41,23 @@ export default function HeatmapPage() {
       toast({ title: "Error", description: "Could not load saved habits.", variant: "destructive" });
     }
   }, [toast]);
+
+  React.useEffect(() => {
+    setIsMounted(true);
+    loadHabitsFromStorage();
+
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === LOCAL_STORAGE_KEY) {
+        loadHabitsFromStorage();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [loadHabitsFromStorage]);
+
 
   const handlePreviousYear = () => {
     setCurrentYear((prevYear) => prevYear - 1);

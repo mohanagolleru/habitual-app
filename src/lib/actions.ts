@@ -8,9 +8,10 @@ import { format, subDays, differenceInCalendarDays, parseISO } from 'date-fns';
 
 const habitSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters long."),
-  description: z.string().optional(),
+  // description: z.string().optional(), // Removed
   frequency: z.enum(["daily", "weekly", "monthly"]),
   icon: z.string().min(1, "Icon is required."),
+  color: z.string().min(1, "Color is required."),
 });
 
 // This is a placeholder for actual database operations.
@@ -20,9 +21,10 @@ const habitSchema = z.object({
 export async function createHabitAction(formData: FormData): Promise<{ habit?: Habit; errors?: z.ZodIssue[] }> {
   const validatedFields = habitSchema.safeParse({
     title: formData.get("title"),
-    description: formData.get("description"),
+    // description: formData.get("description"), // Removed
     frequency: formData.get("frequency"),
     icon: formData.get("icon"),
+    color: formData.get("color"),
   });
 
   if (!validatedFields.success) {
@@ -32,9 +34,10 @@ export async function createHabitAction(formData: FormData): Promise<{ habit?: H
   const newHabit: Habit = {
     id: crypto.randomUUID(),
     title: validatedFields.data.title,
-    description: validatedFields.data.description,
+    // description: validatedFields.data.description, // Removed
     frequency: validatedFields.data.frequency as HabitFrequency,
     icon: validatedFields.data.icon,
+    color: validatedFields.data.color,
     createdAt: new Date().toISOString(),
     completions: {},
     currentStreak: 0,
@@ -113,12 +116,6 @@ export async function logHabitCompletionAction(
   
   let streaks: { currentStreak: number, longestStreak: number };
   
-  // For weekly/monthly, streak calculation is complex and often defined differently.
-  // For this app, we will apply daily streak logic to all for simplicity,
-  // or a user might expect streak to mean consecutive days of *doing the habit within the period*.
-  // The current implementation of calculateStreakForDaily is best suited for daily habits.
-  // For weekly/monthly, it would count consecutive days of logging within those less frequent habits.
-  // This might not be "true" weekly/monthly streaks but is a consistent calculation.
   streaks = calculateStreakForDaily(newCompletions, dateStr);
 
 

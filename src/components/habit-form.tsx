@@ -9,7 +9,7 @@ import type { Habit, HabitFrequency } from "@/lib/types";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+// import { Textarea } from "@/components/ui/textarea"; // Removed
 import {
   Select,
   SelectContent,
@@ -29,15 +29,17 @@ import {
 import * as LucideIcons from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Smile } from 'lucide-react';
+import { Check, Palette, Smile } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const habitFormSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters long.").max(50, "Title too long."),
-  description: z.string().max(200, "Description too long.").optional(),
+  // description: z.string().max(200, "Description too long.").optional(), // Removed
   frequency: z.enum(["daily", "weekly", "monthly"], {
     required_error: "Please select a frequency.",
   }),
   icon: z.string().min(1, "Please select an icon."),
+  color: z.string().min(1, "Please select a color."),
 });
 
 export type HabitFormValues = z.infer<typeof habitFormSchema>;
@@ -48,29 +50,57 @@ interface HabitFormProps {
   isSubmitting: boolean;
 }
 
-const iconBlacklist: string[] = ['Icon','LucideIcon', 'LucideProps', 'IconNode', 'IconWeight', 'Eraser'];
-const availableIcons = Object.keys(LucideIcons)
-    .filter(key => /^[A-Z]/.test(key) && 
-                   (LucideIcons as any)[key].displayName && // Check if it's a ForwardRefExoticComponent (typical for icons)
-                   !iconBlacklist.includes(key));
+const PREDEFINED_ICONS: string[] = [
+  'Activity', 'Anchor', 'Award', 'Bike', 'BookOpen', 'Briefcase', 'Calendar', 'Camera', 
+  'CheckCircle', 'ClipboardList', 'Cloud', 'Coffee', 'Cpu', 'DollarSign', 'Dumbbell', 
+  'Feather', 'Film', 'Flag', 'Gift', 'Globe', 'Heart', 'Home', 'Image', 'Laptop', 
+  'Leaf', 'Lightbulb', 'Link', 'List', 'Lock', 'MapPin', 'Mic', 'Moon', 'Music', 
+  'Package', 'PenTool', 'Plane', 'Rocket', 'Run', 'Save', 'Search', 'Settings', 
+  'Share2', 'Shield', 'ShoppingBag', 'Smile', 'Speaker', 'Star', 'Sun', 'Sunrise', 
+  'Sunset', 'Tablet', 'Tag', 'Target', 'ThumbsUp', 'Trophy', 'Tv', 'User', 'Users', 
+  'Video', 'Watch', 'Wind', 'Zap' 
+].sort();
 
+
+const COLOR_PALETTE: { name: string; class: string; textColor: string }[] = [
+  { name: 'Red', class: 'bg-red-500', textColor: 'text-white' },
+  { name: 'Orange', class: 'bg-orange-500', textColor: 'text-white' },
+  { name: 'Amber', class: 'bg-amber-500', textColor: 'text-black' },
+  { name: 'Yellow', class: 'bg-yellow-400', textColor: 'text-black' },
+  { name: 'Lime', class: 'bg-lime-500', textColor: 'text-black' },
+  { name: 'Green', class: 'bg-green-500', textColor: 'text-white' },
+  { name: 'Emerald', class: 'bg-emerald-500', textColor: 'text-white' },
+  { name: 'Teal', class: 'bg-teal-500', textColor: 'text-white' },
+  { name: 'Cyan', class: 'bg-cyan-500', textColor: 'text-black' },
+  { name: 'Sky', class: 'bg-sky-500', textColor: 'text-white' },
+  { name: 'Blue', class: 'bg-blue-500', textColor: 'text-white' }, // Default
+  { name: 'Indigo', class: 'bg-indigo-500', textColor: 'text-white' },
+  { name: 'Violet', class: 'bg-violet-500', textColor: 'text-white' },
+  { name: 'Purple', class: 'bg-purple-500', textColor: 'text-white' },
+  { name: 'Fuchsia', class: 'bg-fuchsia-500', textColor: 'text-white' },
+  { name: 'Pink', class: 'bg-pink-500', textColor: 'text-white' },
+  { name: 'Rose', class: 'bg-rose-500', textColor: 'text-white' },
+];
+const DEFAULT_COLOR_CLASS = 'bg-blue-500';
 
 export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProps) {
   const form = useForm<HabitFormValues>({
     resolver: zodResolver(habitFormSchema),
     defaultValues: {
       title: initialData?.title || "",
-      description: initialData?.description || "",
+      // description: initialData?.description || "", // Removed
       frequency: initialData?.frequency || "daily",
       icon: initialData?.icon || "Target",
+      color: initialData?.color || DEFAULT_COLOR_CLASS,
     },
   });
 
   const [iconSearch, setIconSearch] = React.useState("");
   const [isIconPopoverOpen, setIsIconPopoverOpen] = React.useState(false);
 
-  const filteredIcons = availableIcons.filter(iconName => iconName.toLowerCase().includes(iconSearch.toLowerCase()));
-
+  const filteredIcons = PREDEFINED_ICONS.filter(iconName => 
+    iconName.toLowerCase().includes(iconSearch.toLowerCase())
+  );
 
   return (
     <Form {...form}>
@@ -89,19 +119,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description (Optional)</FormLabel>
-              <FormControl>
-                <Textarea placeholder="A brief description of your habit" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* Description Field Removed */}
 
         <FormField
           control={form.control}
@@ -158,7 +176,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                     <div className="grid grid-cols-4 gap-1 p-2">
                     {filteredIcons.map(iconName => {
                       const IconComponent = (LucideIcons as any)[iconName];
-                      if (!IconComponent) return null;
+                      if (!IconComponent || typeof IconComponent === 'string') return null; // Ensure it's a component
                       return (
                         <Button
                           type="button"
@@ -182,6 +200,40 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
               </Popover>
               <FormDescription>
                 Choose an icon that represents your habit.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="color"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Color</FormLabel>
+              <FormControl>
+                <div className="grid grid-cols-6 gap-2 p-1 border rounded-md">
+                  {COLOR_PALETTE.map((colorOption) => (
+                    <Button
+                      type="button"
+                      key={colorOption.class}
+                      variant="outline"
+                      className={cn(
+                        "h-10 w-10 rounded-md p-0 border-2",
+                        colorOption.class,
+                        field.value === colorOption.class ? 'border-ring ring-2 ring-ring ring-offset-2' : 'border-transparent'
+                      )}
+                      onClick={() => field.onChange(colorOption.class)}
+                      aria-label={colorOption.name}
+                    >
+                      {field.value === colorOption.class && <Check className={cn("h-5 w-5", colorOption.textColor)} />}
+                    </Button>
+                  ))}
+                </div>
+              </FormControl>
+              <FormDescription>
+                Select a color for your habit.
               </FormDescription>
               <FormMessage />
             </FormItem>

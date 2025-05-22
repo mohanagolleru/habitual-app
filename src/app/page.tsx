@@ -17,6 +17,7 @@ import { RefreshCw } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 const LOCAL_STORAGE_KEY = "habitsData_v1"; // increment version if schema changes
+const DEFAULT_HABIT_COLOR = "bg-blue-500";
 
 export default function HomePage() {
   const [habits, setHabits] = React.useState<Habit[]>([]);
@@ -33,10 +34,10 @@ export default function HomePage() {
       const storedHabits = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (storedHabits) {
         const parsedHabits: Habit[] = JSON.parse(storedHabits);
-        // Ensure all habits have all fields, especially new ones like 'icon'
         const validatedHabits = parsedHabits.map(h => ({
           ...h,
-          icon: h.icon || 'Target', // Default icon if missing
+          icon: h.icon || 'Target', 
+          color: h.color || DEFAULT_HABIT_COLOR,
           completions: h.completions || {},
           currentStreak: h.currentStreak || 0,
           longestStreak: h.longestStreak || 0,
@@ -51,7 +52,7 @@ export default function HomePage() {
   }, [toast]);
 
   React.useEffect(() => {
-    if (isMounted) { // Only save to localStorage after initial mount/load
+    if (isMounted) { 
         try {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(habits));
         } catch (error) {
@@ -82,9 +83,9 @@ export default function HomePage() {
       const updatedHabitData: Habit = {
         ...habitToUpdate,
         title: values.title,
-        description: values.description,
         frequency: values.frequency,
         icon: values.icon,
+        color: values.color,
       };
       setHabits(prevHabits => prevHabits.map(h => h.id === existingHabitId ? updatedHabitData : h));
       toast({ title: "Success", description: "Habit updated successfully." });
@@ -112,7 +113,7 @@ export default function HomePage() {
     const habit = habits.find(h => h.id === habitId);
     if (!habit) return;
 
-    setIsSubmitting(true); // Potentially use a different loading state for this specific action
+    setIsSubmitting(true); 
     const result = await logHabitCompletionAction(habit, dateStr, completed);
     setIsSubmitting(false);
 
@@ -137,7 +138,6 @@ export default function HomePage() {
         return;
     }
     
-    // Optimistic update
     const originalHabits = [...habits];
     setHabits(prevHabits => prevHabits.filter(h => h.id !== habitId));
     
@@ -145,7 +145,7 @@ export default function HomePage() {
     if (result.success) {
       toast({ title: "Habit Deleted", description: `"${habitToDelete.title}" has been removed.` });
     } else {
-      setHabits(originalHabits); // Rollback
+      setHabits(originalHabits); 
       toast({ title: "Error", description: result.errors?.join(', ') || "Failed to delete habit.", variant: "destructive" });
     }
   };
@@ -157,7 +157,6 @@ export default function HomePage() {
   const currentDateContext = selectedDate || new Date();
 
   if (!isMounted) {
-    // Optional: show a loading spinner or skeleton UI
     return <div className="flex justify-center items-center min-h-screen"><p>Loading habits...</p></div>;
   }
 
