@@ -9,7 +9,6 @@ import type { Habit, HabitFrequency } from "@/lib/types";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-// import { Textarea } from "@/components/ui/textarea"; // Removed
 import {
   Select,
   SelectContent,
@@ -34,7 +33,6 @@ import { cn } from '@/lib/utils';
 
 const habitFormSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters long.").max(50, "Title too long."),
-  // description: z.string().max(200, "Description too long.").optional(), // Removed
   frequency: z.enum(["daily", "weekly", "monthly"], {
     required_error: "Please select a frequency.",
   }),
@@ -51,17 +49,44 @@ interface HabitFormProps {
 }
 
 const PREDEFINED_ICONS: string[] = [
-  'Activity', 'Anchor', 'Apple', 'Award', 'Bed', 'Bike', 'BookOpen', 'Brain', 
-  'Briefcase', 'Calendar', 'Camera', 'Carrot', 'CheckCircle', 'ClipboardList', 
-  'Cloud', 'Coffee', 'CookingPot', 'Cpu', 'CupSoda', 'DollarSign', 'Dumbbell', 
-  'Feather', 'Film', 'Fish', 'Flag', 'Flame', 'Footprints', 'ForkKnife', 'Gift', 
-  'Globe', 'Grape', 'Heart', 'HeartPulse', 'Home', 'Image', 'Laptop', 'Leaf', 
-  'Lightbulb', 'Link', 'List', 'Lock', 'MapPin', 'Medal', 'Mic', 'Moon', 
-  'Mountain', 'Music', 'Package', 'PenTool', 'Plane', 'Rocket', 'Run', 'Salad', 
-  'Sandwich', 'Save', 'Scale', 'Search', 'Settings', 'Share2', 'Shield', 
-  'ShoppingBag', 'Smile', 'Speaker', 'Sprout', 'Star', 'Sun', 'Sunrise', 
-  'Sunset', 'Tablet', 'Tag', 'Target', 'ThumbsUp', 'Trophy', 'Tv', 'User', 
-  'Users', 'Utensils', 'Video', 'Watch', 'Waves', 'Wind', 'Yoga', 'Zap'
+  'Apple',        // Food, Health
+  'Bed',          // Sleep
+  'Bike',         // Exercise
+  'BookOpen',     // Reading, Learning
+  'Brain',        // Mental Wellness, Learning
+  'Briefcase',    // Work, Productivity
+  'Calendar',     // Planning, Tracking
+  'Carrot',       // Food, Health
+  'CheckCircle',  // Completion, Goals
+  'ClipboardList',// Tasks, To-do
+  'Coffee',       // Morning Routine, Drinks
+  'CookingPot',   // Cooking, Meal Prep
+  'CupSoda',      // Hydration, Drinks
+  'Dumbbell',     // Exercise, Gym
+  'Footprints',   // Walking, Steps
+  'Heart',        // Health, Wellbeing
+  'HeartPulse',   // Fitness, Cardio
+  'Home',         // Home Chores, Organization
+  'Laptop',       // Work, Study, Digital Habits
+  'Leaf',         // Nature, Growth, Environment
+  'Lightbulb',    // Ideas, Learning, Creativity
+  'List',         // Tasks, Organization
+  'Moon',         // Evening Routine, Sleep
+  'Music',        // Hobby, Relaxation, Learning
+  'PenTool',      // Writing, Journaling, Art
+  'Run',          // Exercise, Running
+  'Salad',        // Healthy Eating
+  'Scale',        // Weight, Measurement, Fitness
+  'Smile',        // Mood, Positivity, Gratitude
+  'Sprout',       // Growth, New Habits, Plants
+  'Star',         // Achievements, Goals, Self-care
+  'Sun',          // Morning Routine, Waking Up
+  'Target',       // Goals, Focus
+  'Trophy',       // Achievements, Milestones
+  'Utensils',     // Eating, Meals, Cooking
+  'Watch',        // Time Management, Punctuality
+  'Yoga',         // Exercise, Wellness, Mindfulness
+  'Zap',          // Energy, Focus, Quick Tasks
 ].sort();
 
 
@@ -91,7 +116,6 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     resolver: zodResolver(habitFormSchema),
     defaultValues: {
       title: initialData?.title || "",
-      // description: initialData?.description || "", // Removed
       frequency: initialData?.frequency || "daily",
       icon: initialData?.icon || "Target",
       color: initialData?.color || DEFAULT_COLOR_CLASS,
@@ -121,8 +145,6 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
             </FormItem>
           )}
         />
-
-        {/* Description Field Removed */}
 
         <FormField
           control={form.control}
