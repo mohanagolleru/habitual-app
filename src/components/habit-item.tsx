@@ -129,7 +129,7 @@ export function HabitItem({
             {isCompletedForCurrentDate ? (
               <CheckCircle2 className="mr-2 h-5 w-5" />
             ) : (
-              <Circle className="mr-2 h-5 w-5" />
+              <Circle className="mr-2 h-5 w-5 text-log-today-text" />
             )}
             {isCompletedForCurrentDate ? "Done" : "Log Today"}
           </Button>
@@ -144,3 +144,5 @@ export function HabitItem({
     </Card>
   );
 }
+
+    
