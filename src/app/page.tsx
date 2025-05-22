@@ -203,10 +203,6 @@ export default function HomePage() {
       
       const [draggedItem] = newHabits.splice(sourceIndex, 1);
       
-      // If source was before target, target index needs to be adjusted after splice
-      // However, re-finding targetIndex or simply inserting at the original targetIndex
-      // (if it hasn't shifted due to source item being the target itself, which is handled) works.
-      // For inserting *before* the target element:
       newHabits.splice(targetIndex, 0, draggedItem);
       
       return newHabits;
@@ -243,8 +239,10 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
           <div className="md:col-span-1 space-y-6">
-             <DailySummary habits={habits} currentDate={currentDateContext} />
-             <HabitCalendar habits={habits} selectedDate={selectedDate} onSelectDate={setSelectedDate} />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <DailySummary habits={habits} currentDate={currentDateContext} />
+              <HabitCalendar habits={habits} selectedDate={selectedDate} onSelectDate={setSelectedDate} />
+            </div>
              {selectedDate && !isToday(selectedDate) && (
                 <Button onClick={resetToToday} variant="outline" className="w-full">
                     <RefreshCw className="mr-2 h-4 w-4" /> Back to Today
