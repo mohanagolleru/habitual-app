@@ -60,8 +60,8 @@ export function MonthGrid({ year, month, completions, creationDate }: MonthGridP
   return (
     <div className="flex flex-col items-center">
       <div className="grid grid-cols-7 gap-1 mb-1 w-full px-1">
-        {DAY_LABELS.map((label) => (
-          <div key={label} className="text-xs font-medium text-center text-muted-foreground">
+        {DAY_LABELS.map((label, index) => (
+          <div key={`${label}-${index}`} className="text-xs font-medium text-center text-muted-foreground">
             {label}
           </div>
         ))}
@@ -82,7 +82,6 @@ export function MonthGrid({ year, month, completions, creationDate }: MonthGridP
             title={cell.date ? format(cell.date, 'PPP') : undefined}
           >
             {/* Optionally render day number for debugging, but design doesn't show it */}
-            {/* {cell.day} */}
           </div>
         ))}
       </div>
