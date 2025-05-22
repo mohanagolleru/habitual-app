@@ -273,7 +273,7 @@ export default function HomePage() {
               <Card className="shadow-lg text-center py-20 bg-card">
                 <div className="flex flex-col items-center">
                   <img src="https://placehold.co/150x150.png" alt="Empty state illustration" data-ai-hint="journal empty" className="mb-6 rounded-lg" />
-                  <h2 className="text-2xl font-semibold text-primary mb-4">Welcome to Habitual!</h2>
+                  <h2 className="text-2xl font-semibold text-[#0000FF] mb-4">Welcome to Habitual!</h2>
                   <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                     It looks like you don't have any habits yet.
                     <br />
