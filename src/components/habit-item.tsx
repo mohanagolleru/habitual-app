@@ -120,7 +120,7 @@ export function HabitItem({
           <Button
             onClick={handleToggleCompletion}
             variant={isCompletedForCurrentDate ? "default" : "outline"}
-            size="sm" 
+            size="sm"
             className={cn(
               isCompletedForCurrentDate
                 ? "bg-[#ADFF2F] hover:bg-[#98e61a] text-black"
@@ -128,16 +128,16 @@ export function HabitItem({
             )}
           >
             {isCompletedForCurrentDate ? (
-              <CheckCircle2 className="mr-2 h-5 w-5" />
+              <CheckCircle2 className="mr-1 h-4 w-4" />
             ) : (
-              <Circle className="mr-2 h-5 w-5 text-log-today-text" />
+              <Circle className="mr-1 h-4 w-4 text-log-today-text" />
             )}
             {isCompletedForCurrentDate ? "Done" : "Log Today"}
           </Button>
         )}
         {(!canLogForThisDate || !habitExistsOnThisDate) && (
              <Button disabled variant="outline" size="sm">
-                {isCompletedForCurrentDate ? <CheckCircle2 className="mr-2 h-5 w-5" /> : <Circle className="mr-2 h-5 w-5" />}
+                {isCompletedForCurrentDate ? <CheckCircle2 className="mr-1 h-4 w-4" /> : <Circle className="mr-1 h-4 w-4" />}
                 {isCompletedForCurrentDate ? 'Done' : 'Log'} for {format(currentDateContext, 'MMM d')}
             </Button>
         )}
