@@ -18,7 +18,7 @@ export function AppHeader({ onOpenAddHabitDialog }: AppHeaderProps) {
         <Link href="/" className="text-3xl font-bold text-primary">
           Habitual
         </Link>
-        <div className="flex items-center gap-4 pr-52"> {/* Changed from pr-12 to pr-52 */}
+        <div className="flex items-center gap-40 pr-14"> {/* Adjusted gap to gap-40 (10rem) and pr-14 (3.5rem) */}
           <Link href="/heatmap" passHref>
             <Button variant="outline" size="lg">
               <LayoutGrid className="mr-2 h-5 w-5" />
