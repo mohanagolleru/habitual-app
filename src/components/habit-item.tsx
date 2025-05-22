@@ -75,21 +75,23 @@ export function HabitItem({
       onDrop={onDropHandler}
       onDragEnd={onDragEndHandler}
     >
-      <CardHeader className="flex-row items-start gap-2 space-y-0 pb-2 pt-3">
-        <span className="p-1">
-          <IconComponent
-            className={cn("h-8 w-8 text-black")}
-            strokeWidth={1}
-            style={{ shapeRendering: 'crispEdges', imageRendering: 'pixelated' }}
-          />
-        </span>
-        <div className="flex-1">
-          <CardTitle className="text-xl">{habit.title}</CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 py-3 px-4">
+        <div className="flex-grow mr-2 overflow-hidden">
+          <CardTitle className="text-xl truncate">{habit.title}</CardTitle>
         </div>
-        <Badge variant="secondary" className="capitalize">
-            <CalendarIcon className="w-3 h-3 mr-1" />
-            {frequencyTextMap[habit.frequency]}
-        </Badge>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="p-0">
+            <IconComponent
+              className="h-6 w-6 text-black"
+              strokeWidth={1}
+              style={{ shapeRendering: 'crispEdges', imageRendering: 'pixelated' }}
+            />
+          </span>
+          <Badge variant="secondary" className="capitalize">
+              <CalendarIcon className="w-3 h-3 mr-1" />
+              {frequencyTextMap[habit.frequency]}
+          </Badge>
+        </div>
       </CardHeader>
       <CardContent className="flex-grow space-y-1 py-2">
         <div className="flex justify-around text-center">
@@ -122,13 +124,13 @@ export function HabitItem({
             className={cn(
               isCompletedForCurrentDate
                 ? "bg-[#ADFF2F] hover:bg-[#98e61a] text-black" // "Done" button
-                : "text-black hover:text-black px-2" // "Log now" button - narrower
+                : "text-black hover:text-black px-2" // "Log now" button
             )}
           >
             {isCompletedForCurrentDate ? (
               <CheckCircle2 className="mr-2 h-5 w-5" />
             ) : (
-              <Circle className="mr-1 h-4 w-4" /> // Smaller icon and margin for "Log now"
+              <Circle className="mr-1 h-4 w-4" />
             )}
             {isCompletedForCurrentDate ? "Done" : "Log now"}
           </Button>
