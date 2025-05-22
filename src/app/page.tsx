@@ -239,15 +239,15 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start max-w-6xl mx-auto">
           <div className="md:col-span-1 space-y-4 flex flex-col items-start md:items-center">
-            <DailySummary habits={habits} currentDate={currentDateContext} className="max-w-xs w-full"/>
+            <DailySummary habits={habits} currentDate={currentDateContext} className="w-full"/>
             <HabitCalendar 
               habits={habits} 
               selectedDate={selectedDate} 
               onSelectDate={setSelectedDate} 
-              className="max-w-xs w-full"
+              className="w-full"
             />
              {selectedDate && !isToday(selectedDate) && (
-                <Button onClick={resetToToday} variant="outline" className="w-full max-w-xs">
+                <Button onClick={resetToToday} variant="outline" className="w-full">
                     <RefreshCw className="mr-2 h-4 w-4" /> Back to Today
                 </Button>
              )}
@@ -296,4 +296,3 @@ export default function HomePage() {
     </div>
   );
 }
-
