@@ -81,7 +81,7 @@ export default function HeatmapPage() {
               <Home className="h-5 w-5" />
             </Button>
           </Link>
-          <h1 className="text-3xl font-bold text-[#0000FF]">Habit Heatmap</h1>
+          <h1 className="text-3xl font-bold text-primary">Habit Heatmap</h1>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="icon" onClick={handlePreviousYear} aria-label="Previous year">
               <ChevronLeft className="h-5 w-5" />
@@ -102,7 +102,7 @@ export default function HeatmapPage() {
         ) : (
           <div className="text-center py-20">
              <img src="https://placehold.co/150x150.png" alt="No habits illustration" data-ai-hint="calendar empty" className="mx-auto mb-6 rounded-lg" />
-            <h2 className="text-2xl font-semibold text-[#0000FF] mb-2">No Habits to Display</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-2">No Habits to Display</h2>
             <p className="text-muted-foreground">
               Once you add some habits, their heatmaps will appear here.
             </p>
