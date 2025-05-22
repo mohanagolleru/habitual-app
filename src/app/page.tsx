@@ -229,7 +229,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col">
       <AppHeader onOpenAddHabitDialog={() => handleOpenAddHabitDialog()} />
 
       <main className="flex-grow container mx-auto px-4 py-2 space-y-8">

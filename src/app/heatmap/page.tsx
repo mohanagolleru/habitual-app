@@ -73,7 +73,7 @@ export default function HeatmapPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <header className="py-6 border-b">
         <div className="container mx-auto flex items-center justify-between">
           <Link href="/" passHref>
