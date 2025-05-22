@@ -53,6 +53,8 @@ body {
     --sidebar-accent-foreground: 24 9.8% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 207 89% 68%;
+
+    --log-today-text: 359 99% 47%; /* #EF0107 */
   }
 
   .dark {
@@ -98,6 +100,8 @@ body {
     --sidebar-accent-foreground: 24 9.8% 10%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 207 89% 68%;
+
+    --log-today-text: 359 99% 47%; /* #EF0107 */
   }
 }
 

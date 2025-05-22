@@ -75,8 +75,8 @@ export function HabitItem({
       onDrop={onDropHandler}
       onDragEnd={onDragEndHandler}
     >
-      <CardHeader className="flex-row items-start gap-4 space-y-0 pb-3">
-        <span className="p-2">
+      <CardHeader className="flex-row items-start gap-2 space-y-0 pb-3">
+        <span className="p-1.5">
           <IconComponent
             className={cn("h-8 w-8 text-black")}
             strokeWidth={1}
@@ -122,7 +122,9 @@ export function HabitItem({
             variant={isCompletedForCurrentDate ? "default" : "outline"}
             className={cn(
               "min-w-[140px]",
-              isCompletedForCurrentDate && "bg-[#ADFF2F] hover:bg-[#98e61a] text-black"
+              isCompletedForCurrentDate 
+                ? "bg-[#ADFF2F] hover:bg-[#98e61a] text-black" 
+                : "text-[hsl(var(--log-today-text))] hover:text-[hsl(var(--log-today-text))]"
             )}
           >
             {isCompletedForCurrentDate ? (
