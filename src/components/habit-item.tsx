@@ -120,6 +120,7 @@ export function HabitItem({
             variant={isCompletedForCurrentDate ? "default" : "outline"}
             size="default" 
             className={cn(
+              "px-2", // Reduced horizontal padding
               isCompletedForCurrentDate
                 ? "bg-[#ADFF2F] hover:bg-[#98e61a] text-black"
                 : "text-black hover:text-black"
@@ -134,7 +135,7 @@ export function HabitItem({
           </Button>
         )}
         {(!canLogForThisDate || !habitExistsOnThisDate) && (
-             <Button disabled variant="outline" size="default">
+             <Button disabled variant="outline" size="default" className="px-2"> {/* Reduced horizontal padding */}
                 {isCompletedForCurrentDate ? <CheckCircle2 className="mr-2 h-5 w-5" /> : <Circle className="mr-2 h-5 w-5" />}
                 {isCompletedForCurrentDate ? 'Done' : 'Log'} for {format(currentDateContext, 'MMM d')}
             </Button>
@@ -143,5 +144,3 @@ export function HabitItem({
     </Card>
   );
 }
-
-    
