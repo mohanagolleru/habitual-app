@@ -28,7 +28,7 @@ import {
 import * as LucideIcons from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Check, Palette, Smile } from 'lucide-react';
+import { Check, Palette, Smile as SmileIcon } from 'lucide-react'; // Renamed Smile to SmileIcon to avoid conflict
 import { cn } from '@/lib/utils';
 
 const habitFormSchema = z.object({
@@ -49,48 +49,85 @@ interface HabitFormProps {
 }
 
 const PREDEFINED_ICONS: string[] = [
-  // Food & Drink
-  'Utensils',     // General Eating, Meals
-  'CookingPot',   // Cooking, Meal Prep
-  'Coffee',       // Coffee, Morning Routine
-  'GlassWater',   // Hydration
-  'Salad',        // Healthy Eating
-  'Sandwich',     // Lunch, Meal
-  // Exercise & Fitness
-  'Bike',         // Exercise, Cycling
-  'Dumbbell',     // Gym, Strength Training
-  'Footprints',   // Walking, Steps
-  'HeartPulse',   // Cardio, Fitness Tracking
-  'Run',          // Running
-  'Yoga',         // Yoga, Wellness, Mindfulness
-  'Scale',        // Weight Tracking, Fitness
-  // Health & Wellbeing
-  'Bed',          // Sleep
-  'Brain',        // Mental Wellness, Focus
-  'Heart',        // General Health, Wellbeing
-  'Smile',        // Mood, Positivity, Gratitude
-  'Sprout',       // Growth, New Habits, Plants (can also fit environment)
-  'Sun',          // Morning Routine, Waking Up
-  'Moon',         // Evening Routine, Sleep
-  // Productivity & Learning
-  'BookOpen',     // Reading, Learning
-  'Briefcase',    // Work, Career
-  'Calendar',     // Planning, Tracking
-  'ClipboardList',// Tasks, To-do Lists
-  'Laptop',       // Work, Study, Digital Tasks
-  'Lightbulb',    // Ideas, Creativity
-  'PenTool',      // Writing, Journaling, Art
-  'Watch',        // Time Management, Punctuality
-  // General & Goals
-  'CheckCircle',  // Completion, Success
-  'Home',         // Home Chores, Organization
-  'Leaf',         // Nature, Environment (can also be growth)
-  'List',         // General Lists, Organization
-  'Music',        // Hobby, Relaxation
-  'Star',         // Achievements, Self-care
-  'Target',       // Goals, Focus
-  'Trophy',       // Milestones, Achievements
-  'Zap',          // Energy, Quick Tasks
+  'Activity',
+  'AlarmClockCheck',
+  'Apple',
+  'Archive',
+  'Award',
+  'Ban',
+  'Banknote',
+  'BeanOff',
+  'Bed',
+  'Bike',
+  'BookOpen',
+  'BookOpenText',
+  'Brain',
+  'Briefcase',
+  'Calculator',
+  'CalendarDays',
+  'CandyOff',
+  'Cat',
+  'CheckCircle2',
+  'ChefHat',
+  'CigaretteOff',
+  'ClipboardList',
+  'Clock',
+  'CookingPot',
+  'CreditCard',
+  'Dental',
+  'Dog',
+  'Dumbbell',
+  'Ear',
+  'FastForward',
+  'Footprints',
+  'GlassWater',
+  'Goal',
+  'GraduationCap',
+  'Handshake',
+  'HeartHandshake',
+  'HeartPulse',
+  'HelpingHand',
+  'Home',
+  'Hourglass',
+  'Languages',
+  'Laptop',
+  'Leaf',
+  'Lightbulb',
+  'ListTodo',
+  'Lotus',
+  'MonitorOff',
+  'Moon',
+  'Move',
+  'Paintbrush',
+  'PartyPopper',
+  'PawPrint',
+  'PenTool',
+  'PersonStanding',
+  'Phone',
+  'PiggyBank',
+  'Pill',
+  'Recycle',
+  'Run',
+  'Salad',
+  'Sandwich',
+  'ShieldCheck',
+  'Shirt',
+  'Smile',
+  'SprayCan',
+  'Sprout',
+  'Star',
+  'Sunrise',
+  'Target',
+  'Timer',
+  'Trash2',
+  'TrendingUp',
+  'Trophy',
+  'Users',
+  'Utensils',
+  'Vote',
+  'Waves',
+  'Yoga',
+  'Zap'
 ].sort();
 
 
@@ -189,7 +226,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                           {field.value}
                         </>
                       ) : (
-                        <> <Smile className="mr-2 h-4 w-4" /> Select icon </>
+                        <> <SmileIcon className="mr-2 h-4 w-4" /> Select icon </>
                       )}
                     </Button>
                   </FormControl>
@@ -215,6 +252,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                           onClick={() => {
                             field.onChange(iconName);
                             setIsIconPopoverOpen(false);
+                            setIconSearch(""); // Reset search on selection
                           }}
                         >
                           <IconComponent className="h-5 w-5 mb-1" />
