@@ -122,7 +122,7 @@ export function HabitItem({
             variant={isCompletedForCurrentDate ? "default" : "outline"}
             className={cn(
               "min-w-[140px]",
-              isCompletedForCurrentDate && "bg-green-600 hover:bg-green-700 text-white"
+              isCompletedForCurrentDate && "bg-[#ADFF2F] hover:bg-[#98e61a] text-black"
             )}
           >
             {isCompletedForCurrentDate ? (
