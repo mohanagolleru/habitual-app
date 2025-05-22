@@ -24,6 +24,7 @@ export default function HeatmapPage() {
       const storedHabits = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (storedHabits) {
         const parsedHabits: Habit[] = JSON.parse(storedHabits);
+        // Validate and use stored order, do not re-sort here
         const validatedHabits = parsedHabits.map(h => ({
             ...h,
             icon: h.icon || 'Target',
@@ -33,7 +34,7 @@ export default function HeatmapPage() {
             longestStreak: h.longestStreak || 0,
             frequency: h.frequency || 'daily',
             createdAt: h.createdAt || new Date(0).toISOString()
-          })).sort((a,b) => parseISO(a.createdAt).getTime() - parseISO(b.createdAt).getTime());
+          }));
         setHabits(validatedHabits);
       }
     } catch (error) {
