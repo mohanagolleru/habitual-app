@@ -26,10 +26,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import * as LucideIcons from 'lucide-react';
-import { Smile } from 'lucide-react'; // Specific import for placeholder
+import { Smile, Check } from 'lucide-react'; // Specific import for placeholder and Check
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const habitFormSchema = z.object({
@@ -78,8 +77,8 @@ const LUCIDE_EXCLUDED_KEYS = [
   'LucideProvider',
   'toPascalCase',
   'default',
-  'icons', // This is an object map of icons, not a component
-  'createLucideIcon' // Helper function
+  'icons', 
+  'createLucideIcon'
 ];
 
 export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProps) {
@@ -160,14 +159,14 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
               <Popover open={isIconPopoverOpen} onOpenChange={setIsIconPopoverOpen}>
                 <PopoverTrigger asChild>
                   <FormControl>
-                    <Button variant="outline" role="combobox" className="w-full justify-start">
+                    <Button variant="outline" role="combobox" className="w-full justify-start text-popover-foreground">
                       {field.value && (LucideIcons as any)[field.value] ? (
                         <>
-                          {React.createElement((LucideIcons as any)[field.value], { className: "mr-2 h-4 w-4 text-popover-foreground" })}
+                          {React.createElement((LucideIcons as any)[field.value], { className: "mr-2 h-4 w-4" })}
                           {field.value}
                         </>
                       ) : (
-                        <> <Smile className="mr-2 h-4 w-4 text-popover-foreground" /> Select icon </>
+                        <> <Smile className="mr-2 h-4 w-4" /> Select icon </>
                       )}
                     </Button>
                   </FormControl>
@@ -183,23 +182,36 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                     <div className="grid grid-cols-4 gap-1 p-2">
                     {filteredIcons.map(iconName => {
                       const IconComponent = (LucideIcons as any)[iconName];
-                      if (!IconComponent || typeof IconComponent === 'string') return null;
-                      return (
-                        <Button
-                          type="button"
-                          key={iconName}
-                          variant="ghost"
-                          className="flex flex-col items-center justify-center h-16 p-1"
-                          onClick={() => {
-                            field.onChange(iconName);
-                            setIsIconPopoverOpen(false);
-                            setIconSearch(""); 
-                          }}
-                        >
-                          <IconComponent className="h-5 w-5 mb-1 text-popover-foreground" />
-                          <span className="text-xs truncate w-full text-center">{iconName}</span>
-                        </Button>
-                      );
+                      if (!IconComponent || typeof IconComponent === 'string') {
+                        return null;
+                      }
+                      try {
+                        return (
+                          <div
+                            key={iconName}
+                            className="p-2 flex flex-col items-center cursor-pointer hover:bg-accent rounded-md"
+                            onClick={() => {
+                              field.onChange(iconName);
+                              setIsIconPopoverOpen(false);
+                              setIconSearch(""); 
+                            }}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    field.onChange(iconName);
+                                    setIsIconPopoverOpen(false);
+                                    setIconSearch("");
+                                }
+                            }}
+                          >
+                            <IconComponent className="h-6 w-6" style={{ color: 'red' }} />
+                            <span className="text-xs mt-1 text-center truncate w-full">{iconName}</span>
+                          </div>
+                        );
+                      } catch (e) {
+                        return <div key={iconName} className="p-2 text-xs text-red-500">Error: {iconName}</div>;
+                      }
                     })}
                     {filteredIcons.length === 0 && <p className="p-2 text-sm text-muted-foreground col-span-4 text-center">No icons found.</p>}
                     </div>
@@ -255,3 +267,5 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     </Form>
   );
 }
+
+    
