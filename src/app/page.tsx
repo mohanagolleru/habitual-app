@@ -239,10 +239,8 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
           <div className="md:col-span-1 space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <DailySummary habits={habits} currentDate={currentDateContext} />
-              <HabitCalendar habits={habits} selectedDate={selectedDate} onSelectDate={setSelectedDate} />
-            </div>
+            <DailySummary habits={habits} currentDate={currentDateContext} />
+            <HabitCalendar habits={habits} selectedDate={selectedDate} onSelectDate={setSelectedDate} />
              {selectedDate && !isToday(selectedDate) && (
                 <Button onClick={resetToToday} variant="outline" className="w-full">
                     <RefreshCw className="mr-2 h-4 w-4" /> Back to Today
