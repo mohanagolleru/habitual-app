@@ -49,44 +49,48 @@ interface HabitFormProps {
 }
 
 const PREDEFINED_ICONS: string[] = [
-  'Apple',        // Food, Health
-  'Bed',          // Sleep
-  'Bike',         // Exercise
-  'BookOpen',     // Reading, Learning
-  'Brain',        // Mental Wellness, Learning
-  'Briefcase',    // Work, Productivity
-  'Calendar',     // Planning, Tracking
-  'Carrot',       // Food, Health
-  'CheckCircle',  // Completion, Goals
-  'ClipboardList',// Tasks, To-do
-  'Coffee',       // Morning Routine, Drinks
+  // Food & Drink
+  'Utensils',     // General Eating, Meals
   'CookingPot',   // Cooking, Meal Prep
-  'CupSoda',      // Hydration, Drinks
-  'Dumbbell',     // Exercise, Gym
-  'Footprints',   // Walking, Steps
-  'Heart',        // Health, Wellbeing
-  'HeartPulse',   // Fitness, Cardio
-  'Home',         // Home Chores, Organization
-  'Laptop',       // Work, Study, Digital Habits
-  'Leaf',         // Nature, Growth, Environment
-  'Lightbulb',    // Ideas, Learning, Creativity
-  'List',         // Tasks, Organization
-  'Moon',         // Evening Routine, Sleep
-  'Music',        // Hobby, Relaxation, Learning
-  'PenTool',      // Writing, Journaling, Art
-  'Run',          // Exercise, Running
+  'Coffee',       // Coffee, Morning Routine
+  'GlassWater',   // Hydration
   'Salad',        // Healthy Eating
-  'Scale',        // Weight, Measurement, Fitness
+  'Sandwich',     // Lunch, Meal
+  // Exercise & Fitness
+  'Bike',         // Exercise, Cycling
+  'Dumbbell',     // Gym, Strength Training
+  'Footprints',   // Walking, Steps
+  'HeartPulse',   // Cardio, Fitness Tracking
+  'Run',          // Running
+  'Yoga',         // Yoga, Wellness, Mindfulness
+  'Scale',        // Weight Tracking, Fitness
+  // Health & Wellbeing
+  'Bed',          // Sleep
+  'Brain',        // Mental Wellness, Focus
+  'Heart',        // General Health, Wellbeing
   'Smile',        // Mood, Positivity, Gratitude
-  'Sprout',       // Growth, New Habits, Plants
-  'Star',         // Achievements, Goals, Self-care
+  'Sprout',       // Growth, New Habits, Plants (can also fit environment)
   'Sun',          // Morning Routine, Waking Up
-  'Target',       // Goals, Focus
-  'Trophy',       // Achievements, Milestones
-  'Utensils',     // Eating, Meals, Cooking
+  'Moon',         // Evening Routine, Sleep
+  // Productivity & Learning
+  'BookOpen',     // Reading, Learning
+  'Briefcase',    // Work, Career
+  'Calendar',     // Planning, Tracking
+  'ClipboardList',// Tasks, To-do Lists
+  'Laptop',       // Work, Study, Digital Tasks
+  'Lightbulb',    // Ideas, Creativity
+  'PenTool',      // Writing, Journaling, Art
   'Watch',        // Time Management, Punctuality
-  'Yoga',         // Exercise, Wellness, Mindfulness
-  'Zap',          // Energy, Focus, Quick Tasks
+  // General & Goals
+  'CheckCircle',  // Completion, Success
+  'Home',         // Home Chores, Organization
+  'Leaf',         // Nature, Environment (can also be growth)
+  'List',         // General Lists, Organization
+  'Music',        // Hobby, Relaxation
+  'Star',         // Achievements, Self-care
+  'Target',       // Goals, Focus
+  'Trophy',       // Milestones, Achievements
+  'Zap',          // Energy, Quick Tasks
 ].sort();
 
 
