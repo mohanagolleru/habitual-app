@@ -7,21 +7,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { MonthGrid } from './month-grid';
 import * as LucideIcons from 'lucide-react';
 import { Flame, TrendingUp, Calendar } from 'lucide-react';
-import { format, getMonth, subMonths } from 'date-fns';
+import { format } from 'date-fns';
 
 interface HabitHeatmapCardProps {
   habit: Habit;
   year: number;
 }
 
-// Define specific months to show (e.g., last 3 months of the year)
-const MONTHS_TO_DISPLAY = [9, 10, 11]; // Oct, Nov, Dec (0-indexed)
+// Generate an array of month indices (0-11)
+const ALL_MONTHS = Array.from({ length: 12 }, (_, i) => i);
 
 export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
   const IconComponent = (LucideIcons as any)[habit.icon] || LucideIcons.Target;
 
   const getMonthName = (monthIndex: number): string => {
-    return format(new Date(year, monthIndex), 'MMM');
+    return format(new Date(year, monthIndex), 'MMMM'); // Full month name
   };
   
   const frequencyTextMap = {
@@ -57,8 +57,8 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {MONTHS_TO_DISPLAY.map((monthIndex) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-6">
+          {ALL_MONTHS.map((monthIndex) => (
             <div key={monthIndex} className="flex flex-col items-center">
               <h4 className="text-sm font-medium mb-1 text-muted-foreground">{getMonthName(monthIndex)} {year}</h4>
               <MonthGrid
