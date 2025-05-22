@@ -132,7 +132,7 @@ export function HabitItem({
             ) : (
               <Circle className="mr-2 h-5 w-5 text-log-today-text" />
             )}
-            {isCompletedForCurrentDate ? "Done" : "Log Today"}
+            {isCompletedForCurrentDate ? "Done" : "Log now"}
           </Button>
         )}
         {(!canLogForThisDate || !habitExistsOnThisDate) && (
