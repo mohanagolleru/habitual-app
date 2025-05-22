@@ -33,7 +33,7 @@ export function DailySummary({ habits, currentDate }: DailySummaryProps) {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle className="text-2xl font-semibold text-center text-primary">
+        <CardTitle className="text-xl font-semibold text-center">
           {titleText}
         </CardTitle>
       </CardHeader>
@@ -57,3 +57,4 @@ export function DailySummary({ habits, currentDate }: DailySummaryProps) {
     </Card>
   );
 }
+

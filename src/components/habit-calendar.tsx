@@ -43,7 +43,7 @@ export function HabitCalendar({ habits, selectedDate, onSelectDate, className }:
   return (
     <Card className={`shadow-lg ${className}`}>
       <CardHeader>
-        <CardTitle className="text-2xl font-semibold text-center text-primary">Activity Calendar</CardTitle>
+        <CardTitle className="text-xl font-semibold text-center">Activity Calendar</CardTitle>
       </CardHeader>
       <CardContent className="flex justify-center">
         <Calendar
@@ -65,3 +65,4 @@ export function HabitCalendar({ habits, selectedDate, onSelectDate, className }:
     </Card>
   );
 }
+
