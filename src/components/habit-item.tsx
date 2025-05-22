@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from 'react';
@@ -119,7 +120,7 @@ export function HabitItem({
           <Button
             onClick={handleToggleCompletion}
             variant={isCompletedForCurrentDate ? "default" : "outline"}
-            size="sm"
+            size="default" 
             className={cn(
               isCompletedForCurrentDate
                 ? "bg-[#ADFF2F] hover:bg-[#98e61a] text-black"
@@ -135,7 +136,7 @@ export function HabitItem({
           </Button>
         )}
         {(!canLogForThisDate || !habitExistsOnThisDate) && (
-             <Button disabled variant="outline" size="sm">
+             <Button disabled variant="outline" size="default">
                 {isCompletedForCurrentDate ? <CheckCircle2 className="mr-2 h-5 w-5" /> : <Circle className="mr-2 h-5 w-5" />}
                 {isCompletedForCurrentDate ? 'Done' : 'Log'} for {format(currentDateContext, 'MMM d')}
             </Button>
