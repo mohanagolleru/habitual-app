@@ -93,7 +93,7 @@ export default function HeatmapPage() {
         </div>
       </header>
 
-      <main className="flex-grow container mx-auto px-4 py-8 space-y-6">
+      <main className="flex-grow container mx-auto px-4 py-8 space-y-4">
         {habits.length > 0 ? (
           habits.map((habit) => (
             <HabitHeatmapCard key={habit.id} habit={habit} year={currentYear} />

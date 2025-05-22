@@ -38,12 +38,12 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
     <Card className="shadow-md w-full">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-                <span className={cn("p-2 rounded-lg", habit.color)}>
-                <IconComponent className={cn("h-7 w-7", iconTextColor)} />
+            <div className="flex items-center gap-2">
+                <span className={cn("p-1.5 rounded-lg", habit.color)}>
+                <IconComponent className={cn("h-6 w-6", iconTextColor)} />
                 </span>
                 <div>
-                <CardTitle className="text-xl">{habit.title}</CardTitle>
+                <CardTitle className="text-lg">{habit.title}</CardTitle>
                 <CardDescription className="text-sm">
                     <Calendar className="inline-block h-3 w-3 mr-1" />
                     {frequencyTextMap[habit.frequency]}
@@ -61,7 +61,7 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
           {ALL_MONTHS.map((monthIndex) => (
             <div key={monthIndex} className="flex flex-col items-center">
               <h4 className="text-sm font-medium mb-1 text-muted-foreground">{getMonthName(monthIndex)} {year}</h4>
