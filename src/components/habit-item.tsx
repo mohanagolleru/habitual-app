@@ -80,7 +80,7 @@ export function HabitItem({ habit, onToggleCompletion, onDeleteHabit, onEditHabi
             <Button variant="outline" size="icon" onClick={() => onEditHabit(habit)} aria-label="Edit habit">
                 <Edit3 className="h-4 w-4" />
             </Button>
-            <Button variant="destructive" size="icon" onClick={() => onDeleteHabit(habit.id)} aria-label="Delete habit">
+            <Button variant="outline" size="icon" onClick={() => onDeleteHabit(habit.id)} aria-label="Delete habit">
                 <Trash2 className="h-4 w-4" />
             </Button>
         </div>
