@@ -75,7 +75,7 @@ export function HabitItem({
       onDrop={onDropHandler}
       onDragEnd={onDragEndHandler}
     >
-      <CardHeader className="flex-row items-start gap-2 space-y-0 pb-2">
+      <CardHeader className="flex-row items-start gap-2 space-y-0 pb-2 pt-3">
         <span className="p-1.5">
           <IconComponent
             className={cn("h-8 w-8 text-black")}
@@ -91,7 +91,7 @@ export function HabitItem({
             {frequencyTextMap[habit.frequency]}
         </Badge>
       </CardHeader>
-      <CardContent className="flex-grow space-y-2">
+      <CardContent className="flex-grow space-y-1 py-2">
         <div className="flex justify-around text-center">
           <div>
             <p className="text-2xl font-semibold text-accent flex items-center justify-center">
@@ -107,7 +107,7 @@ export function HabitItem({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between items-center border-t pt-3 mt-auto">
+      <CardFooter className="flex justify-between items-center border-t pt-3 pb-3 mt-auto">
         <div className="flex gap-2">
             <Button variant="outline" size="icon" onClick={() => onEditHabit(habit)} aria-label="Edit habit">
                 <Edit3 className="h-4 w-4" />
@@ -120,6 +120,7 @@ export function HabitItem({
           <Button
             onClick={handleToggleCompletion}
             variant={isCompletedForCurrentDate ? "default" : "outline"}
+            size="sm" 
             className={cn(
               isCompletedForCurrentDate
                 ? "bg-[#ADFF2F] hover:bg-[#98e61a] text-black"
@@ -135,7 +136,7 @@ export function HabitItem({
           </Button>
         )}
         {(!canLogForThisDate || !habitExistsOnThisDate) && (
-             <Button disabled variant="outline">
+             <Button disabled variant="outline" size="sm">
                 {isCompletedForCurrentDate ? <CheckCircle2 className="mr-2 h-5 w-5" /> : <Circle className="mr-2 h-5 w-5" />}
                 {isCompletedForCurrentDate ? 'Done' : 'Log'} for {format(currentDateContext, 'MMM d')}
             </Button>
