@@ -24,7 +24,7 @@ export default function HeatmapPage() {
       const storedHabits = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (storedHabits) {
         const parsedHabits: Habit[] = JSON.parse(storedHabits);
-        // Validate and use stored order, do not re-sort here
+        // Use stored order, do not re-sort here
         const validatedHabits = parsedHabits.map(h => ({
             ...h,
             icon: h.icon || 'Target',
@@ -75,7 +75,7 @@ export default function HeatmapPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="py-3 border-b">
-        <div className="container mx-auto flex items-center justify-between">
+        <div className="container mx-auto flex items-center justify-between px-8">
           <Link href="/" passHref>
             <Button variant="outline" size="icon" aria-label="Back to Home">
               <Home className="h-5 w-5" />
@@ -100,7 +100,7 @@ export default function HeatmapPage() {
             <HabitHeatmapCard key={habit.id} habit={habit} year={currentYear} />
           ))
         ) : (
-          <div className="text-center py-20">
+          <div className="text-center py-16">
              <img src="https://placehold.co/150x150.png" alt="No habits illustration" data-ai-hint="calendar empty" className="mx-auto mb-6 rounded-lg" />
             <h2 className="text-2xl font-semibold text-primary mb-2">No Habits to Display</h2>
             <p className="text-muted-foreground">
