@@ -30,8 +30,8 @@ export function HabitHeatmapCard({ habit, year }: HabitHeatmapCardProps) {
     monthly: "Monthly",
   };
 
-  // Determine text color for icon based on habit.color brightness
-  const iconTextColor = habit.color.includes('yellow-400') || habit.color.includes('lime-500') || habit.color.includes('cyan-500') || habit.color.includes('amber-500') ? 'text-neutral-800' : 'text-white';
+  // Determine text color for icon based on habit.color brightness for high contrast (black or white)
+  const iconTextColor = habit.color.includes('yellow-400') || habit.color.includes('lime-500') || habit.color.includes('cyan-500') || habit.color.includes('amber-500') ? 'text-black' : 'text-white';
 
 
   return (

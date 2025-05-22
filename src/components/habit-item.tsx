@@ -38,9 +38,8 @@ export function HabitItem({ habit, onToggleCompletion, onDeleteHabit, onEditHabi
     monthly: "Monthly",
   };
   
-  // Determine text color for icon based on habit.color brightness
-  // This is a simplified heuristic. A more robust solution would involve color math.
-  const iconTextColor = habit.color.includes('yellow-400') || habit.color.includes('lime-500') || habit.color.includes('cyan-500') || habit.color.includes('amber-500') ? 'text-neutral-800' : 'text-white';
+  // Determine text color for icon based on habit.color brightness for high contrast (black or white)
+  const iconTextColor = habit.color.includes('yellow-400') || habit.color.includes('lime-500') || habit.color.includes('cyan-500') || habit.color.includes('amber-500') ? 'text-black' : 'text-white';
 
   return (
     <Card className="shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col h-full">
