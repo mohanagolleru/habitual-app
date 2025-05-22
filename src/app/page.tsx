@@ -36,13 +36,14 @@ export default function HomePage() {
         const parsedHabits: Habit[] = JSON.parse(storedHabits);
         const validatedHabits = parsedHabits.map(h => ({
           ...h,
-          icon: h.icon || 'Target', 
-          color: h.color || DEFAULT_HABIT_COLOR,
+          icon: h.icon || 'Target',
+          color: (typeof h.color === 'string' && h.color.startsWith('bg-')) ? h.color : DEFAULT_HABIT_COLOR,
           completions: h.completions || {},
           currentStreak: h.currentStreak || 0,
           longestStreak: h.longestStreak || 0,
-          frequency: h.frequency || 'daily'
-        }));
+          frequency: h.frequency || 'daily',
+          createdAt: h.createdAt || new Date(0).toISOString()
+        })).sort((a,b) => parseISO(a.createdAt).getTime() - parseISO(b.createdAt).getTime());
         setHabits(validatedHabits);
       }
     } catch (error) {
@@ -52,7 +53,7 @@ export default function HomePage() {
   }, [toast]);
 
   React.useEffect(() => {
-    if (isMounted) { 
+    if (isMounted) {
         try {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(habits));
         } catch (error) {
@@ -60,7 +61,7 @@ export default function HomePage() {
         }
     }
   }, [habits, isMounted]);
-  
+
   const handleOpenAddHabitDialog = (habitToEdit?: Habit) => {
     setEditingHabit(habitToEdit);
     setIsAddHabitDialogOpen(true);
@@ -73,7 +74,7 @@ export default function HomePage() {
 
   const handleAddOrUpdateHabit = async (values: HabitFormValues, existingHabitId?: string) => {
     setIsSubmitting(true);
-    if (existingHabitId) { 
+    if (existingHabitId) {
       const habitToUpdate = habits.find(h => h.id === existingHabitId);
       if (!habitToUpdate) {
         toast({ title: "Error", description: "Habit not found for editing.", variant: "destructive" });
@@ -89,7 +90,7 @@ export default function HomePage() {
       };
       setHabits(prevHabits => prevHabits.map(h => h.id === existingHabitId ? updatedHabitData : h));
       toast({ title: "Success", description: "Habit updated successfully." });
-    } else { 
+    } else {
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         if (value !== undefined) formData.append(key, String(value));
@@ -113,7 +114,7 @@ export default function HomePage() {
     const habit = habits.find(h => h.id === habitId);
     if (!habit) return;
 
-    setIsSubmitting(true); 
+    setIsSubmitting(true);
     const result = await logHabitCompletionAction(habit, dateStr, completed);
     setIsSubmitting(false);
 
@@ -137,19 +138,19 @@ export default function HomePage() {
     if (!window.confirm(`Are you sure you want to delete the habit "${habitToDelete.title}"? This action cannot be undone.`)) {
         return;
     }
-    
+
     const originalHabits = [...habits];
     setHabits(prevHabits => prevHabits.filter(h => h.id !== habitId));
-    
-    const result = await deleteHabitAction(habitId); 
+
+    const result = await deleteHabitAction(habitId);
     if (result.success) {
       toast({ title: "Habit Deleted", description: `"${habitToDelete.title}" has been removed.` });
     } else {
-      setHabits(originalHabits); 
+      setHabits(originalHabits);
       toast({ title: "Error", description: result.errors?.join(', ') || "Failed to delete habit.", variant: "destructive" });
     }
   };
-  
+
   const resetToToday = () => {
     setSelectedDate(new Date());
   };
@@ -163,7 +164,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <AppHeader onOpenAddHabitDialog={() => handleOpenAddHabitDialog()} />
-      
+
       <main className="flex-grow container mx-auto px-4 py-2 space-y-8">
         <AddHabitDialog
           isOpen={isAddHabitDialogOpen}

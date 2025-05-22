@@ -27,12 +27,12 @@ export default function HeatmapPage() {
         const validatedHabits = parsedHabits.map(h => ({
             ...h,
             icon: h.icon || 'Target',
-            color: h.color || DEFAULT_HABIT_COLOR,
+            color: (typeof h.color === 'string' && h.color.startsWith('bg-')) ? h.color : DEFAULT_HABIT_COLOR,
             completions: h.completions || {},
             currentStreak: h.currentStreak || 0,
             longestStreak: h.longestStreak || 0,
             frequency: h.frequency || 'daily',
-            createdAt: h.createdAt || new Date(0).toISOString() 
+            createdAt: h.createdAt || new Date(0).toISOString()
           })).sort((a,b) => parseISO(a.createdAt).getTime() - parseISO(b.createdAt).getTime());
         setHabits(validatedHabits);
       }
@@ -66,7 +66,7 @@ export default function HeatmapPage() {
   const handleNextYear = () => {
     setCurrentYear((prevYear) => prevYear + 1);
   };
-  
+
   if (!isMounted) {
     return <div className="flex justify-center items-center min-h-screen"><p>Loading heatmap data...</p></div>;
   }
