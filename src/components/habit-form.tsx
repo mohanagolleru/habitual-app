@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/form";
 import * as LucideIcons from 'lucide-react';
 import { Smile, Check } from 'lucide-react'; // Specific import for placeholder and Check
-// import { ScrollArea } from '@/components/ui/scroll-area'; // Temporarily remove ScrollArea
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 
@@ -87,7 +87,7 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     defaultValues: {
       title: initialData?.title || "",
       frequency: initialData?.frequency || "daily",
-      icon: initialData?.icon || "Target", // Default to Target, a known valid icon
+      icon: initialData?.icon || "Target", 
       color: initialData?.color || DEFAULT_COLOR_CLASS,
     },
   });
@@ -110,7 +110,6 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     iconName.toLowerCase().includes(iconSearch.toLowerCase())
   );
 
-  // For debugging: Log the number of filtered icons
   React.useEffect(() => {
     if(isIconPopoverOpen) {
       console.log("Filtered icons count:", filteredIcons.length);
@@ -181,57 +180,57 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent 
-                  className="w-[--radix-popover-trigger-width] p-2" 
-                  style={{ maxHeight: '300px', overflowY: 'auto' }} // Use direct style for overflow handling
+                <PopoverContent
+                  className="w-[--radix-popover-trigger-width] p-0"
                 >
                    <Input
                       placeholder="Search icons..."
                       value={iconSearch}
                       onChange={(e) => setIconSearch(e.target.value)}
-                      className="mb-2 w-full border-input" 
+                      className="m-2 mb-0 w-[calc(100%-1rem)] border-input"
                     />
-                    <div className="grid grid-cols-4 gap-1">
-                    {filteredIcons.map(iconName => {
-                      const IconComponent = (LucideIcons as any)[iconName];
-                      if (typeof IconComponent !== 'function') {
-                        console.warn(`IconComponent for ${iconName} is not a function and was skipped.`);
-                        return null;
-                      }
-                      try {
-                        return (
-                          <div
-                            key={iconName}
-                            className="p-1 flex flex-col items-center justify-center cursor-pointer hover:bg-accent rounded-sm"
-                            onClick={() => {
-                              field.onChange(iconName);
-                              setIsIconPopoverOpen(false);
-                              setIconSearch("");
-                            }}
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    field.onChange(iconName);
-                                    setIsIconPopoverOpen(false);
-                                    setIconSearch("");
-                                }
-                            }}
-                          >
-                            <IconComponent size={24} color="black" /> {/* Explicit size and black color */}
-                            <span className="text-xs mt-1 text-center truncate w-full text-black">{iconName}</span> {/* Explicit black color for name */}
-                          </div>
-                        );
-                      } catch (e) {
-                        console.error(`Error rendering icon ${iconName}:`, e);
-                        return <div key={iconName} className="p-2 text-xs text-red-500">Error rendering {iconName}</div>;
-                      }
-                    })}
-                    {filteredIcons.length === 0 && iconSearch && <p className="p-2 text-sm text-muted-foreground col-span-4 text-center">No icons found for "{iconSearch}".</p>}
-                    {/* Display a generic message if no search term but still no icons, could indicate loading or an issue */}
-                    {filteredIcons.length === 0 && !iconSearch && availableIcons.length > 0 && <p className="p-2 text-sm text-muted-foreground col-span-4 text-center">No icons match. Try a different search.</p>}
-                    {availableIcons.length === 0 && <p className="p-2 text-sm text-muted-foreground col-span-4 text-center">No icons available to display.</p>}
-                    </div>
+                    <ScrollArea className="h-[250px] p-2">
+                        <div className="grid grid-cols-4 gap-1">
+                        {filteredIcons.map(iconName => {
+                          const IconComponent = (LucideIcons as any)[iconName];
+                          if (typeof IconComponent !== 'function') {
+                            console.warn(`IconComponent for ${iconName} is not a function and was skipped.`);
+                            return null;
+                          }
+                          try {
+                            return (
+                              <div
+                                key={iconName}
+                                className="p-1 flex flex-col items-center justify-center cursor-pointer hover:bg-accent rounded-sm"
+                                onClick={() => {
+                                  field.onChange(iconName);
+                                  setIsIconPopoverOpen(false);
+                                  setIconSearch("");
+                                }}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        field.onChange(iconName);
+                                        setIsIconPopoverOpen(false);
+                                        setIconSearch("");
+                                    }
+                                }}
+                              >
+                                {React.createElement(IconComponent, { size: 24, className: "text-black" })}
+                                <span className="text-xs mt-1 text-center truncate w-full text-black">{iconName}</span>
+                              </div>
+                            );
+                          } catch (e) {
+                            console.error(`Error rendering icon ${iconName}:`, e);
+                            return <div key={iconName} className="p-2 text-xs text-red-500">Error rendering {iconName}</div>;
+                          }
+                        })}
+                        {filteredIcons.length === 0 && iconSearch && <p className="p-2 text-sm text-muted-foreground col-span-4 text-center">No icons found for "{iconSearch}".</p>}
+                        {filteredIcons.length === 0 && !iconSearch && availableIcons.length > 0 && <p className="p-2 text-sm text-muted-foreground col-span-4 text-center">No icons match. Try a different search.</p>}
+                        {availableIcons.length === 0 && <p className="p-2 text-sm text-muted-foreground col-span-4 text-center">No icons available to display.</p>}
+                        </div>
+                    </ScrollArea>
                 </PopoverContent>
               </Popover>
               <FormDescription>
@@ -283,4 +282,5 @@ export function HabitForm({ onSubmit, initialData, isSubmitting }: HabitFormProp
     </Form>
   );
 }
+
     
