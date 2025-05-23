@@ -15,8 +15,10 @@ import { format, parseISO, isToday } from 'date-fns';
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { useAuth } from "@/context/auth-context"; // Import useAuth
+import { useRouter } from "next/navigation"; // Import useRouter
 
-const LOCAL_STORAGE_KEY = "habitsData_v1"; // increment version if schema changes
+const LOCAL_STORAGE_KEY = "habitsData_v1"; 
 const DEFAULT_HABIT_COLOR = "bg-blue-500";
 
 export default function HomePage() {
@@ -31,41 +33,50 @@ export default function HomePage() {
   const [draggingHabitId, setDraggingHabitId] = React.useState<string | null>(null);
   const [dropTargetId, setDropTargetId] = React.useState<string | null>(null);
 
+  const { user, loading: authLoading } = useAuth(); // Get user and auth loading state
+  const router = useRouter(); // Get router instance
 
   React.useEffect(() => {
-    setIsMounted(true);
-    try {
-      const storedHabits = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (storedHabits) {
-        const parsedHabits: Habit[] = JSON.parse(storedHabits);
-        // Validate and use stored order
-        const validatedHabits = parsedHabits.map(h => ({
-          ...h,
-          icon: h.icon || 'Target',
-          color: (typeof h.color === 'string' && h.color.startsWith('bg-')) ? h.color : DEFAULT_HABIT_COLOR,
-          completions: h.completions || {},
-          currentStreak: h.currentStreak || 0,
-          longestStreak: h.longestStreak || 0,
-          frequency: h.frequency || 'daily',
-          createdAt: h.createdAt || new Date(0).toISOString()
-        }));
-        setHabits(validatedHabits);
-      }
-    } catch (error) {
-      console.error("Failed to load habits from local storage:", error);
-      toast({ title: "Error", description: "Could not load saved habits.", variant: "destructive" });
+    if (!authLoading && !user) {
+      router.push('/login'); // Redirect if not logged in and auth check is complete
     }
-  }, [toast]);
+  }, [user, authLoading, router]);
 
   React.useEffect(() => {
-    if (isMounted) {
+    if (user) { // Only load habits if user is logged in
+      setIsMounted(true);
+      try {
+        const storedHabits = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (storedHabits) {
+          const parsedHabits: Habit[] = JSON.parse(storedHabits);
+          const validatedHabits = parsedHabits.map(h => ({
+            ...h,
+            icon: h.icon || 'Target',
+            color: (typeof h.color === 'string' && h.color.startsWith('bg-')) ? h.color : DEFAULT_HABIT_COLOR,
+            completions: h.completions || {},
+            currentStreak: h.currentStreak || 0,
+            longestStreak: h.longestStreak || 0,
+            frequency: h.frequency || 'daily',
+            createdAt: h.createdAt || new Date(0).toISOString()
+          }));
+          setHabits(validatedHabits);
+        }
+      } catch (error) {
+        console.error("Failed to load habits from local storage:", error);
+        toast({ title: "Error", description: "Could not load saved habits.", variant: "destructive" });
+      }
+    }
+  }, [toast, user]); // Add user to dependency array
+
+  React.useEffect(() => {
+    if (isMounted && user) { // Only save habits if mounted and user is logged in
         try {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(habits));
         } catch (error) {
         console.error("Failed to save habits to local storage:", error);
         }
     }
-  }, [habits, isMounted]);
+  }, [habits, isMounted, user]); // Add user to dependency array
 
   const handleOpenAddHabitDialog = (habitToEdit?: Habit) => {
     setEditingHabit(habitToEdit);
@@ -103,7 +114,6 @@ export default function HomePage() {
       const result = await createHabitAction(formData);
 
       if (result.habit) {
-        // Add new habit to the end of the list
         setHabits(prevHabits => [...prevHabits, result.habit!]);
         toast({ title: "Success", description: "New habit added!" });
       } else if (result.errors) {
@@ -161,7 +171,6 @@ export default function HomePage() {
     setSelectedDate(new Date());
   };
 
-  // Drag and Drop Handlers
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, habitId: string) => {
     e.dataTransfer.setData('text/plain', habitId);
     setDraggingHabitId(habitId);
@@ -217,12 +226,16 @@ export default function HomePage() {
     setDropTargetId(null);
   };
 
-
   const currentDateContext = selectedDate || new Date();
 
-  if (!isMounted) {
+  if (authLoading || (!user && !authLoading)) {
+    return <div className="flex justify-center items-center min-h-screen" suppressHydrationWarning={true}><p>Loading application...</p></div>;
+  }
+  
+  if (!isMounted && user) { // Show loading habits only if authenticated and not yet mounted
     return <div className="flex justify-center items-center min-h-screen" suppressHydrationWarning={true}><p>Loading habits...</p></div>;
   }
+
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -238,8 +251,8 @@ export default function HomePage() {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start max-w-7xl mx-auto">
-          <div className="md:col-span-1 space-y-4 flex flex-col items-start md:items-center">
-            <DailySummary habits={habits} currentDate={currentDateContext} className="w-full"/>
+          <div className="md:col-span-1 space-y-4 flex flex-col items-center md:items-center">
+            <DailySummary habits={habits} currentDate={currentDateContext} className="w-full" />
             <HabitCalendar 
               habits={habits} 
               selectedDate={selectedDate} 
@@ -273,7 +286,7 @@ export default function HomePage() {
             ) : (
               <Card className="shadow-xl text-center py-12 bg-card">
                 <div className="flex flex-col items-center">
-                  <img src="https://placehold.co/150x150.png" alt="Empty state illustration" data-ai-hint="journal empty" className="mb-6 rounded-lg" />
+                  <img src="https://placehold.co/150x150.png" data-ai-hint="journal empty" alt="Empty state illustration" className="mb-6 rounded-lg" />
                   <h2 className="text-2xl font-semibold text-primary mb-4">Welcome to Habitual!</h2>
                   <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                     It looks like you don't have any habits yet.
@@ -296,4 +309,3 @@ export default function HomePage() {
     </div>
   );
 }
-

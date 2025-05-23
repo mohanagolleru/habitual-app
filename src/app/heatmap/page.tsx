@@ -9,6 +9,8 @@ import { ChevronLeft, ChevronRight, Home } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { parseISO } from 'date-fns';
+import { useAuth } from '@/context/auth-context'; // Import useAuth
+import { useRouter } from 'next/navigation'; // Import useRouter
 
 const LOCAL_STORAGE_KEY = "habitsData_v1";
 const DEFAULT_HABIT_COLOR = "bg-blue-500";
@@ -19,12 +21,21 @@ export default function HeatmapPage() {
   const { toast } = useToast();
   const [isMounted, setIsMounted] = React.useState(false);
 
+  const { user, loading: authLoading } = useAuth(); // Get user and auth loading state
+  const router = useRouter(); // Get router instance
+
+  React.useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login'); // Redirect if not logged in and auth check is complete
+    }
+  }, [user, authLoading, router]);
+
   const loadHabitsFromStorage = React.useCallback(() => {
     try {
       const storedHabits = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (storedHabits) {
         const parsedHabits: Habit[] = JSON.parse(storedHabits);
-        // Use stored order, do not re-sort here
+        // Use stored order
         const validatedHabits = parsedHabits.map(h => ({
             ...h,
             icon: h.icon || 'Target',
@@ -44,20 +55,22 @@ export default function HeatmapPage() {
   }, [toast]);
 
   React.useEffect(() => {
-    setIsMounted(true);
-    loadHabitsFromStorage();
+    if (user) { // Only load habits if user is logged in
+      setIsMounted(true);
+      loadHabitsFromStorage();
 
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === LOCAL_STORAGE_KEY) {
-        loadHabitsFromStorage();
-      }
-    };
+      const handleStorageChange = (event: StorageEvent) => {
+        if (event.key === LOCAL_STORAGE_KEY) {
+          loadHabitsFromStorage();
+        }
+      };
 
-    window.addEventListener('storage', handleStorageChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, [loadHabitsFromStorage]);
+      window.addEventListener('storage', handleStorageChange);
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+      };
+    }
+  }, [loadHabitsFromStorage, user]); // Add user to dependency array
 
 
   const handlePreviousYear = () => {
@@ -68,9 +81,14 @@ export default function HeatmapPage() {
     setCurrentYear((prevYear) => prevYear + 1);
   };
 
-  if (!isMounted) {
+  if (authLoading || (!user && !authLoading)) {
+    return <div className="flex justify-center items-center min-h-screen"><p>Loading application...</p></div>;
+  }
+
+  if (!isMounted && user) { // Show loading heatmap data only if authenticated and not yet mounted
     return <div className="flex justify-center items-center min-h-screen"><p>Loading heatmap data...</p></div>;
   }
+  
 
   return (
     <div className="min-h-screen flex flex-col">
