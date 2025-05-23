@@ -74,12 +74,18 @@ export default function HomePage() {
   }, [toast, user]);
 
   React.useEffect(() => {
-    if (isMounted && user && user.emailVerified) { // Only save habits if mounted and user is logged in and verified
+    if (isMounted && user && user.emailVerified) { 
         try {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(habits));
+          console.log("[HomePage] Attempting to save habits to localStorage. Count:", habits.length, "Habits:", habits); 
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(habits));
+          console.log("[HomePage] Habits saved to localStorage successfully."); 
         } catch (error) {
-        console.error("Failed to save habits to local storage:", error);
+          console.error("[HomePage] Failed to save habits to local storage:", error); 
         }
+    } else {
+      if (!isMounted) console.log("[HomePage] Did not save to localStorage: isMounted is false.");
+      if (!user) console.log("[HomePage] Did not save to localStorage: user is null.");
+      else if (user && !user.emailVerified) console.log("[HomePage] Did not save to localStorage: user email not verified.");
     }
   }, [habits, isMounted, user]);
 
@@ -153,22 +159,43 @@ export default function HomePage() {
   };
 
   const handleDeleteHabit = async (habitId: string) => {
+    console.log("[HomePage] handleDeleteHabit called for ID:", habitId);
     const habitToDelete = habits.find(h => h.id === habitId);
-    if (!habitToDelete) return;
+    
+    if (!habitToDelete) {
+      console.error("[HomePage] Habit to delete not found with ID:", habitId);
+      toast({ title: "Error", description: "Habit not found for deletion.", variant: "destructive" });
+      return;
+    }
+    console.log("[HomePage] Found habit to delete:", habitToDelete.title);
 
     if (!window.confirm(`Are you sure you want to delete the habit "${habitToDelete.title}"? This action cannot be undone.`)) {
-        return;
+      console.log("[HomePage] Delete cancelled by user for habit:", habitToDelete.title);
+      return;
     }
 
+    console.log("[HomePage] User confirmed deletion for habit:", habitToDelete.title);
     const originalHabits = [...habits];
-    setHabits(prevHabits => prevHabits.filter(h => h.id !== habitId));
+    
+    setHabits(prevHabits => {
+      const newHabits = prevHabits.filter(h => h.id !== habitId);
+      console.log("[HomePage] Optimistically updated habits. Old count:", prevHabits.length, "New count:", newHabits.length, "New habits list:", newHabits);
+      return newHabits;
+    });
 
+    console.log("[HomePage] Calling deleteHabitAction for ID:", habitId);
     const result = await deleteHabitAction(habitId);
+    console.log("[HomePage] deleteHabitAction result:", result);
+
     if (result.success) {
       toast({ title: "Habit Deleted", description: `"${habitToDelete.title}" has been removed.` });
+      // localStorage will be updated by the useEffect watching `habits`
+      console.log("[HomePage] Habit deletion successful for:", habitToDelete.title);
     } else {
-      setHabits(originalHabits);
+      console.error("[HomePage] deleteHabitAction failed. Errors:", result.errors);
+      setHabits(originalHabits); // Rollback optimistic update
       toast({ title: "Error", description: result.errors?.join(', ') || "Failed to delete habit.", variant: "destructive" });
+      console.log("[HomePage] Rolled back optimistic update for habit:", habitToDelete.title);
     }
   };
 
@@ -237,12 +264,10 @@ export default function HomePage() {
     return <div className="flex justify-center items-center min-h-screen" suppressHydrationWarning={true}><p>Loading authentication...</p></div>;
   }
   if (!user || (user && !user.emailVerified)) {
-    // The useEffect hook will handle redirection.
-    // This provides a fallback message if redirection is slow or JS is partly disabled.
     return <div className="flex justify-center items-center min-h-screen" suppressHydrationWarning={true}><p>Access denied. Please log in and verify your email.</p></div>;
   }
   
-  if (!isMounted) { // Show loading habits only if authenticated, verified and not yet mounted
+  if (!isMounted) { 
     return <div className="flex justify-center items-center min-h-screen" suppressHydrationWarning={true}><p>Loading habits...</p></div>;
   }
 
@@ -251,7 +276,7 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col">
       <AppHeader onOpenAddHabitDialog={() => handleOpenAddHabitDialog()} />
 
-      <main className="flex-grow container mx-auto px-6 py-4 space-y-4">
+      <main className="flex-grow container mx-auto px-6 py-4 space-y-6">
         <AddHabitDialog
           isOpen={isAddHabitDialogOpen}
           onClose={handleCloseAddHabitDialog}
