@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Home } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
-import { parseISO, differenceInCalendarDays } from 'date-fns';
+import { parseISO } from 'date-fns';
 import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
 
@@ -50,7 +50,7 @@ export default function HeatmapPage() {
             frequency: h.frequency || 'daily',
             createdAt: h.createdAt || new Date(0).toISOString()
           }));
-        setHabits(validatedHabits);
+        setHabits(validatedHabits); // Order from localStorage is preserved
       }
     } catch (error) {
       console.error("Failed to load habits from local storage for heatmap:", error);
@@ -100,19 +100,19 @@ export default function HeatmapPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="py-3 border-b">
-        <div className="container mx-auto flex items-center justify-between px-8">
-          <Link href="/" passHref>
-            <Button variant="outline" size="icon" aria-label="Back to Home">
+      <header className="py-3 border-b sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:relative md:z-auto">
+        <div className="container mx-auto flex flex-col gap-2 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left px-4 md:px-8">
+          <Link href="/" passHref className="self-center sm:self-auto">
+            <Button variant="outline" size="icon" aria-label="Back to Home" className="sm:mr-auto">
               <Home className="h-5 w-5" />
             </Button>
           </Link>
-          <h1 className="text-3xl font-bold text-primary">Habit Heatmap</h1>
-          <div className="flex items-center gap-2">
+          <h1 className="text-2xl md:text-3xl font-bold text-primary order-first sm:order-none sm:absolute sm:left-1/2 sm:-translate-x-1/2">Habit Heatmap</h1>
+          <div className="flex items-center justify-center sm:justify-end gap-2 sm:ml-auto">
             <Button variant="outline" size="icon" onClick={handlePreviousYear} aria-label="Previous year">
               <ChevronLeft className="h-5 w-5" />
             </Button>
-            <span className="text-xl font-semibold min-w-[5rem] text-center">{currentYear}</span>
+            <span className="text-lg md:text-xl font-semibold min-w-[4rem] md:min-w-[5rem] text-center">{currentYear}</span>
             <Button variant="outline" size="icon" onClick={handleNextYear} aria-label="Next year" disabled={currentYear === new Date().getFullYear()}>
               <ChevronRight className="h-5 w-5" />
             </Button>
@@ -127,7 +127,7 @@ export default function HeatmapPage() {
           ))
         ) : (
           <div className="text-center py-16">
-             <img src="https://placehold.co/150x150.png" alt="No habits illustration" data-ai-hint="calendar empty" className="mx-auto mb-6 rounded-lg" />
+             <img src="https://placehold.co/150x150.png" alt="No habits illustration" data-ai-hint="calendar empty" className="mx-auto mb-6 rounded-lg w-36 h-36" />
             <h2 className="text-2xl font-semibold text-primary mb-2">No Habits to Display</h2>
             <p className="text-muted-foreground">
               Once you add some habits, their heatmaps will appear here.
