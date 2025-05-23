@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { useAuth } from '@/context/auth-context';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"; // Added CardFooter
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { MailCheck, LogOut, Send } from 'lucide-react';
