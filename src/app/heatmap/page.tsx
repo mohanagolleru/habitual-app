@@ -8,9 +8,9 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Home } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
-import { parseISO } from 'date-fns';
-import { useAuth } from '@/context/auth-context'; // Import useAuth
-import { useRouter } from 'next/navigation'; // Import useRouter
+import { parseISO, differenceInCalendarDays } from 'date-fns';
+import { useAuth } from '@/context/auth-context';
+import { useRouter } from 'next/navigation';
 
 const LOCAL_STORAGE_KEY = "habitsData_v1";
 const DEFAULT_HABIT_COLOR = "bg-blue-500";
@@ -21,12 +21,17 @@ export default function HeatmapPage() {
   const { toast } = useToast();
   const [isMounted, setIsMounted] = React.useState(false);
 
-  const { user, loading: authLoading } = useAuth(); // Get user and auth loading state
-  const router = useRouter(); // Get router instance
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
 
   React.useEffect(() => {
-    if (!authLoading && !user) {
-      router.push('/login'); // Redirect if not logged in and auth check is complete
+    if (!authLoading) {
+      if (!user) {
+        router.push('/login');
+      } else if (user && !user.emailVerified) {
+        router.push('/verify-email');
+      }
+      // If user is logged in and email is verified, proceed.
     }
   }, [user, authLoading, router]);
 
@@ -35,7 +40,6 @@ export default function HeatmapPage() {
       const storedHabits = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (storedHabits) {
         const parsedHabits: Habit[] = JSON.parse(storedHabits);
-        // Use stored order
         const validatedHabits = parsedHabits.map(h => ({
             ...h,
             icon: h.icon || 'Target',
@@ -55,7 +59,7 @@ export default function HeatmapPage() {
   }, [toast]);
 
   React.useEffect(() => {
-    if (user) { // Only load habits if user is logged in
+    if (user && user.emailVerified) { // Only load habits if user is logged in and verified
       setIsMounted(true);
       loadHabitsFromStorage();
 
@@ -70,7 +74,7 @@ export default function HeatmapPage() {
         window.removeEventListener('storage', handleStorageChange);
       };
     }
-  }, [loadHabitsFromStorage, user]); // Add user to dependency array
+  }, [loadHabitsFromStorage, user]);
 
 
   const handlePreviousYear = () => {
@@ -81,11 +85,15 @@ export default function HeatmapPage() {
     setCurrentYear((prevYear) => prevYear + 1);
   };
 
-  if (authLoading || (!user && !authLoading)) {
-    return <div className="flex justify-center items-center min-h-screen"><p>Loading application...</p></div>;
+  if (authLoading) {
+    return <div className="flex justify-center items-center min-h-screen"><p>Loading authentication...</p></div>;
   }
-
-  if (!isMounted && user) { // Show loading heatmap data only if authenticated and not yet mounted
+  if (!user || (user && !user.emailVerified)) {
+    // The useEffect hook will handle redirection.
+    return <div className="flex justify-center items-center min-h-screen"><p>Access denied. Please log in and verify your email.</p></div>;
+  }
+  
+  if (!isMounted) { // Show loading heatmap data only if authenticated, verified, and not yet mounted
     return <div className="flex justify-center items-center min-h-screen"><p>Loading heatmap data...</p></div>;
   }
   

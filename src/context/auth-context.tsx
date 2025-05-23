@@ -8,7 +8,7 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   signOut as firebaseSignOut,
-  sendEmailVerification // Import sendEmailVerification
+  sendEmailVerification
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase'; // Ensure this path is correct
 import { useRouter } from 'next/navigation';
@@ -20,6 +20,7 @@ interface AuthContextType {
   signUp: (email: string, pass: string) => Promise<User | null>;
   logIn: (email: string, pass: string) => Promise<User | null>;
   logOut: () => Promise<void>;
+  sendVerificationEmailAgain: () => Promise<boolean>; 
 }
 
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
@@ -28,11 +29,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState(true);
   const router = useRouter();
-  const { toast } = useToast(); // Initialize toast
+  const { toast } = useToast();
 
   React.useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        await currentUser.reload(); // Ensure we have the latest user data (including emailVerified)
+        setUser(auth.currentUser); // Set user from auth.currentUser after reload
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     });
     return () => unsubscribe();
@@ -42,17 +48,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-      // Send verification email
       if (userCredential.user) {
         await sendEmailVerification(userCredential.user);
         toast({
           title: "Verification Email Sent",
           description: "Please check your inbox to verify your email address.",
         });
+        setUser(userCredential.user); // Set user state
+        router.push('/verify-email'); // Redirect to verify email page
+        return userCredential.user;
       }
-      setUser(userCredential.user);
-      router.push('/'); // Redirect to home after signup
-      return userCredential.user;
+      return null;
     } catch (error: any) {
       console.error("Error signing up:", error);
       const errorMessage = error.message || "An unknown error occurred during sign up.";
@@ -67,16 +73,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, pass);
-      setUser(userCredential.user);
-      if (userCredential.user && !userCredential.user.emailVerified) {
+      // Ensure user data is fresh, especially emailVerified
+      await userCredential.user.reload();
+      const freshUser = auth.currentUser; // Get the potentially updated user object
+
+      setUser(freshUser);
+
+      if (freshUser && !freshUser.emailVerified) {
         toast({
           title: "Email Not Verified",
-          description: "Please verify your email address. A verification email was sent to your inbox.",
-          variant: "default" // Or "destructive" if you want to be more prominent
+          description: "Please verify your email address. Redirecting to verification page.",
+          variant: "default"
         });
+        router.push('/verify-email');
+        return freshUser;
       }
-      router.push('/'); // Redirect to home after login
-      return userCredential.user;
+      
+      if (freshUser && freshUser.emailVerified) {
+        router.push('/'); // Redirect to home after successful login and verification
+        return freshUser;
+      }
+      return null; // Should not happen if logic is correct
     } catch (error: any) {
       console.error("Error logging in:", error);
       const errorMessage = error.message || "Invalid email or password. Please try again.";
@@ -93,7 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await firebaseSignOut(auth);
       setUser(null);
       router.push('/login'); // Redirect to login after logout
-    } catch (error: any) {
+    } catch (error: any) { // Added opening brace
       console.error("Error logging out:", error);
       const errorMessage = error.message || "An unknown error occurred during logout.";
       toast({ title: "Logout Failed", description: errorMessage, variant: "destructive"});
@@ -102,12 +119,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const sendVerificationEmailAgain = async (): Promise<boolean> => {
+    if (user && !user.emailVerified) {
+      try {
+        await sendEmailVerification(user);
+        return true;
+      } catch (error: any) {
+        console.error("Error resending verification email:", error);
+        // Firebase often has rate limits, so a generic error is okay.
+        // Specific error codes (like auth/too-many-requests) could be handled.
+        return false;
+      }
+    }
+    return false; // No user or already verified
+  };
+
   const value = {
     user,
     loading,
     signUp,
     logIn,
     logOut,
+    sendVerificationEmailAgain,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

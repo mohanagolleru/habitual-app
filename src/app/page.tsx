@@ -11,12 +11,12 @@ import { AddHabitDialog } from "@/components/add-habit-dialog";
 import type { HabitFormValues } from "@/components/habit-form";
 import { createHabitAction, logHabitCompletionAction, deleteHabitAction } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
-import { format, parseISO, isToday } from 'date-fns';
+import { format, parseISO, isToday, differenceInCalendarDays } from 'date-fns';
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { useAuth } from "@/context/auth-context"; // Import useAuth
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useAuth } from "@/context/auth-context";
+import { useRouter } from "next/navigation";
 
 const LOCAL_STORAGE_KEY = "habitsData_v1"; 
 const DEFAULT_HABIT_COLOR = "bg-blue-500";
@@ -33,17 +33,22 @@ export default function HomePage() {
   const [draggingHabitId, setDraggingHabitId] = React.useState<string | null>(null);
   const [dropTargetId, setDropTargetId] = React.useState<string | null>(null);
 
-  const { user, loading: authLoading } = useAuth(); // Get user and auth loading state
-  const router = useRouter(); // Get router instance
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
 
   React.useEffect(() => {
-    if (!authLoading && !user) {
-      router.push('/login'); // Redirect if not logged in and auth check is complete
+    if (!authLoading) {
+      if (!user) {
+        router.push('/login');
+      } else if (user && !user.emailVerified) {
+        router.push('/verify-email');
+      }
+      // If user is logged in and email is verified, proceed.
     }
   }, [user, authLoading, router]);
 
   React.useEffect(() => {
-    if (user) { // Only load habits if user is logged in
+    if (user && user.emailVerified) { // Only load habits if user is logged in and verified
       setIsMounted(true);
       try {
         const storedHabits = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -66,17 +71,17 @@ export default function HomePage() {
         toast({ title: "Error", description: "Could not load saved habits.", variant: "destructive" });
       }
     }
-  }, [toast, user]); // Add user to dependency array
+  }, [toast, user]);
 
   React.useEffect(() => {
-    if (isMounted && user) { // Only save habits if mounted and user is logged in
+    if (isMounted && user && user.emailVerified) { // Only save habits if mounted and user is logged in and verified
         try {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(habits));
         } catch (error) {
         console.error("Failed to save habits to local storage:", error);
         }
     }
-  }, [habits, isMounted, user]); // Add user to dependency array
+  }, [habits, isMounted, user]);
 
   const handleOpenAddHabitDialog = (habitToEdit?: Habit) => {
     setEditingHabit(habitToEdit);
@@ -228,11 +233,16 @@ export default function HomePage() {
 
   const currentDateContext = selectedDate || new Date();
 
-  if (authLoading || (!user && !authLoading)) {
-    return <div className="flex justify-center items-center min-h-screen" suppressHydrationWarning={true}><p>Loading application...</p></div>;
+  if (authLoading) {
+    return <div className="flex justify-center items-center min-h-screen" suppressHydrationWarning={true}><p>Loading authentication...</p></div>;
+  }
+  if (!user || (user && !user.emailVerified)) {
+    // The useEffect hook will handle redirection.
+    // This provides a fallback message if redirection is slow or JS is partly disabled.
+    return <div className="flex justify-center items-center min-h-screen" suppressHydrationWarning={true}><p>Access denied. Please log in and verify your email.</p></div>;
   }
   
-  if (!isMounted && user) { // Show loading habits only if authenticated and not yet mounted
+  if (!isMounted) { // Show loading habits only if authenticated, verified and not yet mounted
     return <div className="flex justify-center items-center min-h-screen" suppressHydrationWarning={true}><p>Loading habits...</p></div>;
   }
 
@@ -251,7 +261,7 @@ export default function HomePage() {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start max-w-7xl mx-auto">
-          <div className="md:col-span-1 space-y-4 flex flex-col items-center md:items-center">
+          <div className="md:col-span-1 space-y-4 flex flex-col items-start md:items-center">
             <DailySummary habits={habits} currentDate={currentDateContext} className="w-full" />
             <HabitCalendar 
               habits={habits} 
