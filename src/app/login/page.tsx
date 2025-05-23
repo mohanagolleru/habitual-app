@@ -74,12 +74,15 @@ export default function LoginPage() {
             </Button>
           </form>
         </CardContent>
-        <CardFooter className="flex flex-col items-center space-y-2">
+        <CardFooter className="flex flex-col items-center space-y-2 pt-4">
           <p className="text-sm text-muted-foreground">
             Don't have an account?{' '}
             <Link href="/signup" className="font-medium text-primary hover:underline">
               Sign up
             </Link>
+          </p>
+          <p className="text-xs text-muted-foreground mt-2">
+            Maker: Yasodhar
           </p>
         </CardFooter>
       </Card>
