@@ -7,4 +7,7 @@
 - Calendar View: Display a weekly/monthly calendar view that indicates the completion status of each habit on a given day.
 - Daily Summary: Present users with a summary view of the number of habits completed today.
 
+## Interface:
+![Image of Plot](Int1.png)
 
+![Image of Plot](Int2.png)
